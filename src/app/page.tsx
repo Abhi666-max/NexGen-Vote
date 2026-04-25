@@ -45,7 +45,7 @@ export default function HomePage() {
             India&apos;s Premier Election Education Platform
           </div>
 
-          <h1 id="hero-heading" className="font-display font-black mb-6 bg-gradient-to-r from-blue-400 to-indigo-500 text-transparent bg-clip-text" style={{ fontSize: "clamp(2.8rem,7vw,5.5rem)", lineHeight: 1.08, letterSpacing: "-0.03em", dropShadow: "0 2px 10px rgba(59,130,246,0.2)" }}>
+          <h1 id="hero-heading" className="font-display font-black mb-6 bg-gradient-to-r from-blue-400 to-indigo-500 text-transparent bg-clip-text" style={{ fontSize: "clamp(2.8rem,7vw,5.5rem)", lineHeight: 1.08, letterSpacing: "-0.03em", filter: "drop-shadow(0 2px 10px rgba(59,130,246,0.2))" }}>
             Democracy, Now in Your<br />Hands.
           </h1>
 

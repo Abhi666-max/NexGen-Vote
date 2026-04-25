@@ -454,18 +454,18 @@ export default function EVMSimulatorPage() {
                         {/* Vote Button */}
                         <button
                           onClick={() => castVote(c.id)}
-                          disabled={isDisabled || phase === "voted"}
+                          disabled={isDisabled}
                           aria-label={`Vote for ${c.name} — ${c.party}`}
                           aria-pressed={isVoted}
                           className="flex-shrink-0 w-10 h-10 rounded-xl font-bold text-sm transition-all duration-200 focus-ring"
                           style={{
                             background: isVoted
                               ? "hsl(142,70%,40%)"
-                              : isDisabled || phase === "voted"
+                              : isDisabled
                               ? "hsl(220,25%,28%)"
                               : "hsl(220,75%,48%)",
                             color: "#fff",
-                            cursor: isDisabled || phase === "voted" ? "not-allowed" : "pointer",
+                            cursor: isDisabled ? "not-allowed" : "pointer",
                             boxShadow: !isDisabled && phase === "ready"
                               ? "0 4px 12px -2px hsl(220,75%,48%,0.5)"
                               : "none",

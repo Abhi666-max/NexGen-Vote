@@ -8,8 +8,19 @@
 
 import { useState, useCallback } from "react";
 
+type Booth = {
+  id: number;
+  name: string;
+  address: string;
+  ward: string;
+  distance: string;
+  accessible: boolean;
+  hours: string;
+  voters: number;
+};
+
 /* ── Dummy booth data keyed by pincode prefix ── */
-const BOOTH_DB: Record<string, typeof BOOTHS_DELHI> = {
+const BOOTH_DB: Record<string, Booth[]> = {
   default: [
     { id: 1, name: "Zila Parishad Primary School", address: "Sector 12, Near Main Market", ward: "Ward 04", distance: "0.4 km", accessible: true, hours: "7:00 AM – 6:00 PM", voters: 1240 },
     { id: 2, name: "Government Higher Secondary School", address: "Gandhi Nagar, Block B", ward: "Ward 04", distance: "0.9 km", accessible: true, hours: "7:00 AM – 6:00 PM", voters: 980 },
@@ -19,8 +30,6 @@ const BOOTH_DB: Record<string, typeof BOOTHS_DELHI> = {
   ],
 };
 const BOOTHS_DELHI = BOOTH_DB.default;
-
-type Booth = (typeof BOOTHS_DELHI)[number];
 
 /* ── Static map placeholder with booth pins ── */
 function MapPlaceholder({ booths, selected, onSelect }: { booths: Booth[]; selected: number | null; onSelect: (id: number) => void }) {
