@@ -2,7 +2,7 @@
 
 > Democracy, Now in Your Hands.
 
-**Live Demo:** `[[Deploy link will be added here]](https://nex-gen-vote-q8zz.vercel.app/)`
+**Live Demo:** https://nex-gen-vote-q8zz.vercel.app/
 
 **NexGen Vote** is a premium, open-source civic education platform architected to empower Indian citizens. Built with cutting-edge web technologies and AI, the platform provides a complete ecosystem for first-time voters to understand the election process, simulate electronic voting, and verify their knowledge.
 
