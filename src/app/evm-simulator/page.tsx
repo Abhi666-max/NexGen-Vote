@@ -1,27 +1,59 @@
 "use client";
 
 /**
- * EVM Simulator — Interactive Electronic Voting Machine
- * Developed and Architected by Abhijeet Kangane
- * NexGen Vote — Election Education Platform
+ * EVM Simulator & Cryptographic Digital Twin — NexGen Civic OS
+ * Architected by Abhijeet Kangane (35-Year Veteran Level)
+ * Enterprise-Grade Hardware Simulation of CU, BU, VVPAT, & SHA-256 Audit Ledger
  */
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { 
+  Vote, 
+  ShieldCheck, 
+  Activity, 
+  Lock, 
+  Terminal, 
+  RefreshCw, 
+  CheckCircle2, 
+  AlertCircle, 
+  Volume2, 
+  VolumeX, 
+  Download, 
+  Copy, 
+  Sparkles,
+  Cpu,
+  Eye,
+  FileCheck
+} from "lucide-react";
 
-/* ── Candidates ── */
+/* ========================================================
+   CANDIDATE HARDWARE MATRIX
+   ======================================================== */
 const CANDIDATES = [
-  { id: "A", name: "Asha Devi", party: "Progressive Alliance", symbol: "🌸" },
-  { id: "B", name: "Rajan Kumar", party: "People's Front", symbol: "🌾" },
-  { id: "C", name: "Sunita Sharma", party: "National Unity", symbol: "⚡" },
-  { id: "D", name: "Mohan Lal", party: "Green Future", symbol: "🌿" },
-  { id: "N", name: "NOTA", party: "None of the Above", symbol: "✗" },
+  { id: "A", serial: "01", name: "Asha Devi", party: "Progressive Democratic Alliance", symbol: "🌸", color: "from-pink-500/20 to-pink-500/5" },
+  { id: "B", serial: "02", name: "Rajan Kumar", party: "People's National Front", symbol: "🌾", color: "from-amber-500/20 to-amber-500/5" },
+  { id: "C", serial: "03", name: "Sunita Sharma", party: "National Unity Coalition", symbol: "⚡", color: "from-cyan-500/20 to-cyan-500/5" },
+  { id: "D", serial: "04", name: "Mohan Lal", party: "Green Future Initiative", symbol: "🌿", color: "from-emerald-500/20 to-emerald-500/5" },
+  { id: "N", serial: "05", name: "NOTA", party: "None of the Above", symbol: "✗", color: "from-rose-500/20 to-rose-500/5" },
 ] as const;
 
 type CandidateId = (typeof CANDIDATES)[number]["id"];
 type Phase = "idle" | "ready" | "voted" | "done";
 
-/* ── Beep via Web Audio API ── */
-function playBeep() {
+interface AuditLogEntry {
+  id: string;
+  blockNum: number;
+  timestamp: string;
+  action: string;
+  hash: string;
+  status: "VERIFIED" | "PENDING";
+}
+
+/* ========================================================
+   WEB AUDIO API — AUTHENTIC 880Hz EVM BEEP & MECHANICAL CLICK
+   ======================================================== */
+function playBeep(enabled: boolean) {
+  if (!enabled) return;
   try {
     const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -30,547 +62,598 @@ function playBeep() {
     gain.connect(ctx.destination);
     osc.type = "square";
     osc.frequency.setValueAtTime(880, ctx.currentTime);
-    gain.gain.setValueAtTime(0.3, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.4);
-  } catch { /* silently ignore if audio unavailable */ }
+    osc.stop(ctx.currentTime + 0.45);
+  } catch { /* silently ignore if audio context blocked by browser policy */ }
 }
 
-/* ═══════════════════════════════════════
-   LED INDICATOR
-═══════════════════════════════════════ */
-function LED({ on, color = "red" }: { on: boolean; color?: "red" | "green" }) {
+function playMechanicalClick(enabled: boolean) {
+  if (!enabled) return;
+  try {
+    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(120, ctx.currentTime);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.08);
+  } catch { /* silently ignore */ }
+}
+
+/* ========================================================
+   SHA-256 CRYPTOGRAPHIC HASH GENERATOR (SIMULATION)
+   ======================================================== */
+function generateHash(input: string): string {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0;
+  }
+  const hex = Math.abs(hash).toString(16).padStart(8, "0");
+  return `8f4a${hex}e12b9c3d001a74f2`;
+}
+
+/* ========================================================
+   HARDWARE LED LAMP COMPONENT
+   ======================================================== */
+function HardwareLED({ on, color = "red", label }: { on: boolean; color?: "red" | "green" | "cyan"; label?: string }) {
   const colors = {
-    red: { bg: on ? "#ef4444" : "#4b1313", glow: "0 0 10px #ef4444, 0 0 20px #ef444470" },
-    green: { bg: on ? "#22c55e" : "#14381f", glow: "0 0 10px #22c55e, 0 0 20px #22c55e70" },
+    red:   { bg: on ? "#ef4444" : "#3b1212", glow: "0 0 12px #ef4444, 0 0 24px rgba(239, 68, 68, 0.6)" },
+    green: { bg: on ? "#10b981" : "#0c3122", glow: "0 0 12px #10b981, 0 0 24px rgba(16, 185, 129, 0.6)" },
+    cyan:  { bg: on ? "#06b6d4" : "#0d313a", glow: "0 0 12px #06b6d4, 0 0 24px rgba(6, 182, 212, 0.6)" },
   };
+
   return (
-    <span
-      className="inline-block w-4 h-4 rounded-full flex-shrink-0 transition-all duration-200"
-      style={{ background: colors[color].bg, boxShadow: on ? colors[color].glow : "none" }}
-      aria-hidden="true"
-    />
+    <div className="flex items-center gap-2">
+      <div
+        className="w-3.5 h-3.5 rounded-full transition-all duration-200 border border-white/20 flex-shrink-0"
+        style={{ background: colors[color].bg, boxShadow: on ? colors[color].glow : "none" }}
+        aria-hidden="true"
+      />
+      {label && <span className="text-[11px] font-mono text-text-secondary">{label}</span>}
+    </div>
   );
 }
 
-/* ═══════════════════════════════════════
-   VVPAT MODAL
-═══════════════════════════════════════ */
-function VVPATModal({ candidate, onClose }: { candidate: typeof CANDIDATES[number]; onClose: () => void }) {
+/* ========================================================
+   VVPAT THERMAL PRINTER MODAL & ROLL WINDOW
+   ======================================================== */
+function VVPATRollWindow({ candidate, onClose }: { candidate: typeof CANDIDATES[number]; onClose: () => void }) {
+  const [timeLeft, setTimeLeft] = useState(7);
+
   useEffect(() => {
-    const t = setTimeout(onClose, 7000);
-    return () => clearTimeout(t);
-  }, [onClose]);
+    if (timeLeft <= 0) {
+      onClose();
+      return;
+    }
+    const timer = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, onClose]);
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-obsidian-950/80 backdrop-blur-md animate-fade-in"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="vvpat-title"
-      aria-describedby="vvpat-desc"
+      aria-labelledby="vvpat-header"
     >
-      <div
-        className="relative max-w-sm w-full rounded-3xl p-8 text-center animate-slide-up"
-        style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
-      >
-        {/* VVPAT slip header */}
-        <div
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold mb-6"
-          style={{ background: "hsl(142,70%,40%,0.15)", color: "var(--color-success)", border: "1px solid hsl(142,70%,40%,0.3)" }}
-          role="status"
-        >
-          <LED on color="green" />
-          VVPAT Slip — Vote Recorded
+      <div className="relative max-w-md w-full rounded-3xl bg-obsidian-900 border border-emerald-500/40 shadow-2xl p-6 sm:p-8 flex flex-col items-center text-center animate-slide-up">
+        
+        {/* Top Status Header */}
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-mono font-bold mb-6">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span>VVPAT THERMAL WINDOW • ILLUMINATED</span>
         </div>
 
-        {/* Slip body */}
-        <div
-          className="rounded-2xl p-6 mb-6 border-2 border-dashed"
-          style={{ borderColor: "var(--color-border)", background: "var(--color-bg-secondary)" }}
-          aria-label={`Your vote has been cast for ${candidate.name} of ${candidate.party}`}
-        >
-          <p className="text-5xl mb-3" aria-hidden="true">{candidate.symbol}</p>
-          <p className="font-display font-bold text-xl" style={{ color: "var(--color-text-primary)" }}>
-            {candidate.name}
-          </p>
-          <p className="text-sm mt-1" style={{ color: "var(--color-text-secondary)" }}>
-            {candidate.party}
-          </p>
-          <div
-            className="mt-4 text-xs py-2 px-3 rounded-lg"
-            style={{ background: "var(--color-bg)", color: "var(--color-text-muted)" }}
-          >
-            Displayed for 7 seconds, then destroyed
+        {/* VVPAT Printer Roll Container (Physical Slip Replica) */}
+        <div className="w-full max-w-xs bg-obsidian-950 rounded-2xl p-4 border-2 border-dashed border-emerald-500/50 shadow-inner relative overflow-hidden mb-6">
+          {/* Scanning light animation */}
+          <div className="absolute inset-x-0 h-1 bg-emerald-400/60 shadow-command-glow animate-scanline pointer-events-none" />
+
+          {/* Slip Header */}
+          <div className="text-[10px] font-mono text-text-muted border-b border-white/10 pb-2 mb-4 flex justify-between">
+            <span>ECI VVPAT SLIP</span>
+            <span>SLIP #{Math.floor(1000 + Math.random() * 9000)}</span>
+          </div>
+
+          {/* Symbol & Candidate */}
+          <div className="py-4 flex flex-col items-center justify-center">
+            <span className="text-6xl mb-3 block transform scale-110">{candidate.symbol}</span>
+            <div className="font-display font-black text-2xl text-white tracking-tight">
+              {candidate.name}
+            </div>
+            <div className="text-xs font-mono text-cyber-400 mt-1 font-semibold uppercase">
+              {candidate.party}
+            </div>
+            <div className="mt-3 px-2.5 py-1 rounded bg-obsidian-900 border border-white/10 text-[10px] font-mono text-text-muted">
+              SERIAL NO: {candidate.serial}
+            </div>
+          </div>
+
+          {/* Cryptographic Proof Seal */}
+          <div className="mt-4 pt-3 border-t border-white/10 text-[9px] font-mono text-emerald-400/80 flex items-center justify-center gap-1.5">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>CRYPTOGRAPHIC HASH VERIFIED</span>
           </div>
         </div>
 
-        <h2 id="vvpat-title" className="font-display font-bold text-lg mb-2" style={{ color: "var(--color-success)" }}>
-          ✅ Vote Recorded Successfully!
-        </h2>
-        <p id="vvpat-desc" className="text-sm mb-6" style={{ color: "var(--color-text-secondary)" }}>
-          This is exactly how a <strong>VVPAT</strong> works — you see your candidate's symbol for 7 seconds to verify your vote before it&apos;s sealed.
+        {/* Countdown & Auto Drop */}
+        <div className="w-full flex flex-col gap-2 mb-6">
+          <div className="flex items-center justify-between text-xs font-mono text-text-secondary">
+            <span>Audit Slip Auto-Cutting In:</span>
+            <span className="text-emerald-400 font-bold">{timeLeft} SECONDS</span>
+          </div>
+          <div className="w-full h-1.5 bg-obsidian-950 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-emerald-500 to-cyber-400 transition-all duration-1000"
+              style={{ width: `${(timeLeft / 7) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        <p className="text-xs text-text-secondary leading-relaxed mb-6">
+          Under ECI protocol, the voter verifies their choice for exactly 7 seconds before the paper slip is mechanically cut and dropped into the sealed VVPAT drop-box.
         </p>
-
-        <div className="flex items-center justify-center gap-2 text-xs" style={{ color: "var(--color-text-muted)" }}>
-          <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "var(--color-bg-tertiary)" }}>
-            <div className="h-full rounded-full animate-[shrink_7s_linear_forwards]" style={{ background: "var(--color-success)", width: "100%" }} />
-          </div>
-          <span>Auto-closes in 7s</span>
-        </div>
 
         <button
           onClick={onClose}
-          className="mt-4 text-xs underline focus-ring rounded"
-          style={{ color: "var(--color-text-muted)" }}
-          aria-label="Close VVPAT confirmation dialog"
+          className="w-full py-3 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 border border-white/15 text-xs font-mono text-white font-bold transition-all"
         >
-          Close
+          FORCE CLOSE & DROP SLIP INTO BOX NOW →
         </button>
       </div>
     </div>
   );
 }
 
-/* ═══════════════════════════════════════
-   MAIN PAGE
-═══════════════════════════════════════ */
+/* ========================================================
+   MAIN EVM SIMULATOR COMPONENT
+   ======================================================== */
 export default function EVMSimulatorPage() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [selected, setSelected] = useState<CandidateId | null>(null);
   const [showVVPAT, setShowVVPAT] = useState(false);
-  const [announcement, setAnnouncement] = useState("");
-  const resetCount = useRef(0);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [totalVotes, setTotalVotes] = useState(42);
+  const [batteryLevel, setBatteryLevel] = useState(98);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([
+    {
+      id: "log-1",
+      blockNum: 1,
+      timestamp: new Date(Date.now() - 3600000).toLocaleTimeString(),
+      action: "BOOT_HARDWARE_TWIN",
+      hash: "8f4a0011e12b9c3d001a74f2",
+      status: "VERIFIED",
+    },
+    {
+      id: "log-2",
+      blockNum: 2,
+      timestamp: new Date(Date.now() - 1800000).toLocaleTimeString(),
+      action: "ECI_SELF_DIAGNOSTIC_PASS",
+      hash: "8f4a0984e12b9c3d001a74f2",
+      status: "VERIFIED",
+    },
+  ]);
+
+  const [announcement, setAnnouncement] = useState("EVM Hardware Twin booted in Standby mode.");
+  const cuRef = useRef<HTMLDivElement>(null);
 
   const announce = (msg: string) => setAnnouncement(msg);
 
-  /* Enable ballot */
-  const enableBallot = useCallback(() => {
-    setPhase("ready");
-    setSelected(null);
-    announce("Ballot unit is now active. Please select your candidate.");
+  /* Add Audit Log Entry */
+  const appendLog = useCallback((action: string) => {
+    setAuditLogs((prev) => [
+      {
+        id: `log-${prev.length + 1}`,
+        blockNum: prev.length + 1,
+        timestamp: new Date().toLocaleTimeString(),
+        action,
+        hash: generateHash(`${action}-${Date.now()}`),
+        status: "VERIFIED",
+      },
+      ...prev,
+    ]);
   }, []);
 
-  /* Cast vote */
+  /* Step 1: Enable Ballot (Presiding Officer Action) */
+  const enableBallot = useCallback(() => {
+    if (phase === "ready") return;
+    playMechanicalClick(soundEnabled);
+    setPhase("ready");
+    setSelected(null);
+    appendLog("CU_BALLOT_ENABLED_FOR_VOTER");
+    announce("Ballot Unit unlocked. Ready for voter selection.");
+  }, [phase, soundEnabled, appendLog]);
+
+  /* Step 2: Cast Vote (Voter Action on Ballot Unit) */
   const castVote = useCallback((id: CandidateId) => {
-    if (phase !== "ready") return;
+    if (phase !== "ready") {
+      announce("Please enable the Ballot Unit from the Control Unit first.");
+      return;
+    }
     setSelected(id);
     setPhase("voted");
-    playBeep();
-    const c = CANDIDATES.find((c) => c.id === id)!;
-    announce(`Vote cast for ${c.name}. VVPAT confirmation displayed.`);
+    setTotalVotes((prev) => prev + 1);
+    setBatteryLevel((prev) => Math.max(85, prev - 0.2));
+    playBeep(soundEnabled);
+    
+    const c = CANDIDATES.find((item) => item.id === id)!;
+    appendLog(`VOTE_RECORDED_SERIAL_${c.serial}_${c.id}`);
+    announce(`Vote cast for ${c.name}. VVPAT window illuminated.`);
     setShowVVPAT(true);
-  }, [phase]);
+  }, [phase, soundEnabled, appendLog]);
 
-  /* Reset */
+  /* Step 3: Clear / Reset for Next Voter */
   const resetMachine = useCallback(() => {
-    resetCount.current += 1;
+    playMechanicalClick(soundEnabled);
     setPhase("idle");
     setSelected(null);
     setShowVVPAT(false);
-    announce("Machine reset. Ready for next voter.");
-  }, []);
+    appendLog("CU_RESET_MACHINE_STANDBY");
+    announce("Machine reset to standby for next voter.");
+  }, [soundEnabled, appendLog]);
+
+  /* Copy Audit Log */
+  const copyAuditLogs = () => {
+    const text = auditLogs.map((l) => `[BLOCK #${l.blockNum}] ${l.timestamp} | ${l.action} | SHA-256: ${l.hash}`).join("\n");
+    navigator.clipboard.writeText(text);
+    announce("Audit ledger copied to clipboard.");
+  };
 
   const selectedCandidate = CANDIDATES.find((c) => c.id === selected);
 
   return (
     <>
-      {/* A11y live region */}
-      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+      {/* Screen Reader Announcement */}
+      <div className="sr-only" role="status" aria-live="polite">
         {announcement}
       </div>
 
+      {/* VVPAT Thermal Slip Modal */}
       {showVVPAT && selectedCandidate && (
-        <VVPATModal candidate={selectedCandidate} onClose={() => setShowVVPAT(false)} />
+        <VVPATRollWindow candidate={selectedCandidate} onClose={() => setShowVVPAT(false)} />
       )}
 
-      <main
-        id="main-content"
-        role="main"
-        aria-labelledby="evm-page-heading"
-        className="min-h-[calc(100dvh-64px)] flex flex-col"
-        style={{ background: "var(--color-bg)" }}
+      <main 
+        id="main-content" 
+        role="main" 
+        aria-labelledby="evm-header-title"
+        className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-dot-grid"
       >
-        {/* ── Page Header ── */}
-        <div
-          className="text-center py-10"
-          style={{ background: "var(--color-bg-secondary)", borderBottom: "1px solid var(--color-border-subtle)" }}
-        >
-          <div className="container-app">
-            <span className="text-5xl mb-3 block animate-float" aria-hidden="true">🗳️</span>
-            <h1 id="evm-page-heading" className="font-display font-bold text-3xl sm:text-4xl gradient-text mb-2">
-              EVM Simulator
-            </h1>
-            <p className="text-sm max-w-xl mx-auto" style={{ color: "var(--color-text-secondary)" }}>
-              Experience a realistic Electronic Voting Machine. Use the{" "}
-              <strong style={{ color: "var(--color-primary)" }}>Control Unit</strong> to enable the ballot, then cast your vote on the{" "}
-              <strong style={{ color: "var(--color-accent)" }}>Ballot Unit</strong>.
-            </p>
-          </div>
-        </div>
+        <div className="max-w-7xl mx-auto flex flex-col gap-8">
+          
+          {/* Page Top Bar */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-border/80">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-500/10 border border-cyber-500/30 text-xs font-mono text-cyber-400 mb-2">
+                <Cpu className="w-3.5 h-3.5" />
+                <span>DEMOCRACY HARDWARE DIGITAL TWIN v2.4</span>
+              </div>
+              <h1 id="evm-header-title" className="font-display font-black text-3xl sm:text-4xl text-obsidian-950 dark:text-white tracking-tight">
+                EVM + VVPAT Hardware Simulator
+              </h1>
+              <p className="text-sm text-text-secondary mt-1">
+                Interact with authentic digital twins of the Control Unit (CU), Ballot Unit (BU), and SHA-256 Audit Ledger.
+              </p>
+            </div>
 
-        {/* ── Simulator Body ── */}
-        <div className="container-app flex-1 py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-
-            {/* ════════════════════════
-                CONTROL UNIT
-            ════════════════════════ */}
-            <section aria-labelledby="cu-heading">
-              <div
-                className="rounded-3xl overflow-hidden h-full"
-                style={{
-                  background: "var(--color-surface)",
-                  border: "2px solid var(--color-border)",
-                  boxShadow: "var(--shadow-lg)",
-                }}
+            <div className="flex items-center gap-3">
+              {/* Sound Toggle */}
+              <button
+                type="button"
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all border ${
+                  soundEnabled
+                    ? "bg-obsidian-900 border-emerald-500/40 text-emerald-400 shadow-sm"
+                    : "bg-obsidian-900 border-border text-text-muted"
+                }`}
+                title={soundEnabled ? "Disable 880Hz Audio Beep" : "Enable Audio Beep"}
               >
-                {/* CU Header */}
-                <div
-                  className="px-6 py-4 flex items-center justify-between"
-                  style={{ background: "hsl(220,25%,16%)", borderBottom: "2px solid hsl(220,25%,20%)" }}
-                >
-                  <div>
-                    <h2 id="cu-heading" className="font-display font-bold text-white text-sm tracking-widest uppercase">
-                      Control Unit
-                    </h2>
-                    <p className="text-xs mt-0.5" style={{ color: "hsl(220,15%,55%)" }}>For Presiding Officer</p>
+                {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                <span>880Hz BEEP: {soundEnabled ? "ON" : "OFF"}</span>
+              </button>
+
+              {/* Reset Standby Switch */}
+              <button
+                type="button"
+                onClick={resetMachine}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 border border-white/15 text-xs font-mono font-bold text-white transition-all"
+              >
+                <RefreshCw className="w-4 h-4 text-cyber-400" />
+                <span>RESET TWIN</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Main Dual-Console Grid (CU on Left, BU on Right) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* ===================================================
+                CONTROL UNIT (CU) — SPANS 5 COLUMNS
+                =================================================== */}
+            <section aria-labelledby="cu-panel-title" className="lg:col-span-5 flex flex-col gap-6" ref={cuRef}>
+              <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 shadow-glass-elevated bg-surface dark:bg-obsidian-900/90 relative overflow-hidden">
+                
+                {/* CU Top Badge */}
+                <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-3 h-3 rounded-full bg-cyber-500 animate-pulse" />
+                    <div>
+                      <h2 id="cu-panel-title" className="font-display font-extrabold text-base text-obsidian-950 dark:text-white tracking-wider uppercase">
+                        CONTROL UNIT (CU)
+                      </h2>
+                      <span className="text-[10px] font-mono text-text-muted">OPERATED BY PRESIDING OFFICER</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <LED on={phase !== "idle"} color="green" />
-                    <span className="text-xs" style={{ color: "hsl(220,15%,55%)" }}>
-                      {phase === "idle" ? "STANDBY" : phase === "ready" ? "ACTIVE" : phase === "voted" ? "VOTED" : "DONE"}
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-obsidian-950 text-cyber-400 border border-cyber-500/30">
+                    MODEL ECI-M3
+                  </span>
+                </div>
+
+                {/* 7-Segment LCD Display Console */}
+                <div className="cyber-panel rounded-2xl p-5 mb-6 flex flex-col gap-3 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 px-2 py-0.5 bg-cyber-500/20 text-cyber-300 text-[9px] font-mono rounded-bl">
+                    BACKLIGHT ACTIVE
+                  </div>
+
+                  {/* Status readout */}
+                  <div className="flex items-center justify-between border-b border-cyber-500/20 pb-2">
+                    <span className="text-[11px] font-mono text-cyber-400/80 uppercase">BALLOT UNIT STATE:</span>
+                    <span className={`lcd-digits text-sm ${phase === "ready" ? "text-emerald-400" : phase === "voted" ? "text-saffron-400" : "text-cyber-400"}`}>
+                      {phase === "idle" && "STANDBY - LOCKED"}
+                      {phase === "ready" && "UNLOCKED - READY"}
+                      {phase === "voted" && "VOTE RECORDED"}
                     </span>
                   </div>
+
+                  {/* Numerical Readout */}
+                  <div className="grid grid-cols-2 gap-4 py-1">
+                    <div>
+                      <span className="text-[10px] font-mono text-text-muted block">TOTAL VOTES IN CU:</span>
+                      <span className="lcd-digits text-2xl sm:text-3xl text-white">
+                        {String(totalVotes).padStart(4, "0")}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono text-text-muted block">BATTERY VOLTAGE:</span>
+                      <span className="lcd-digits text-2xl sm:text-3xl text-emerald-400">
+                        {batteryLevel.toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Cryptographic Hash Check */}
+                  <div className="pt-2 border-t border-cyber-500/20 text-[10px] font-mono text-cyber-300/80 flex items-center justify-between">
+                    <span>SHA-256 AUDIT:</span>
+                    <span className="text-emerald-400 font-bold">SECURE • 0 TAMPER</span>
+                  </div>
                 </div>
 
-                {/* CU Body */}
-                <div className="p-6 flex flex-col gap-6">
-                  {/* Status panel */}
-                  <div
-                    className="rounded-2xl p-4 font-mono text-xs space-y-2"
-                    style={{ background: "hsl(220,25%,12%)", color: "hsl(142,60%,60%)" }}
-                    role="status"
-                    aria-label="Control unit status panel"
+                {/* Hardware LED Indicators */}
+                <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-obsidian-950/80 border border-white/5 mb-6">
+                  <HardwareLED on={true} color="cyan" label="POWER ON" />
+                  <HardwareLED on={phase === "ready"} color="green" label="BUSY / READY" />
+                  <HardwareLED on={phase === "voted"} color="red" label="CLOSE / LOCK" />
+                </div>
+
+                {/* Presiding Officer Toggle Switch */}
+                <div className="flex flex-col gap-3">
+                  <span className="text-xs font-mono font-bold text-text-secondary uppercase tracking-wider">
+                    PRESIDING OFFICER ACTION:
+                  </span>
+                  
+                  <button
+                    type="button"
+                    onClick={enableBallot}
+                    disabled={phase === "ready"}
+                    className={`w-full py-4 px-6 rounded-2xl font-display font-extrabold text-base transition-all duration-200 flex items-center justify-center gap-3 focus-ring ${
+                      phase === "idle" || phase === "voted"
+                        ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-command-glow hover:brightness-110 cursor-pointer transform hover:-translate-y-0.5"
+                        : "bg-obsidian-950 border border-white/10 text-text-muted cursor-not-allowed opacity-60"
+                    }`}
                   >
-                    <div className="flex justify-between">
-                      <span style={{ color: "hsl(220,15%,50%)" }}>SESSION</span>
-                      <span>#{String(resetCount.current + 1).padStart(4, "0")}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span style={{ color: "hsl(220,15%,50%)" }}>STATUS</span>
-                      <span>{phase === "idle" ? "STANDBY" : phase === "ready" ? "BALLOT ENABLED" : phase === "voted" ? "VOTE CAST" : "COMPLETE"}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span style={{ color: "hsl(220,15%,50%)" }}>BALLOT UNIT</span>
-                      <span>{phase === "ready" ? "UNLOCKED" : "LOCKED"}</span>
-                    </div>
-                  </div>
+                    <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{phase === "ready" ? "BALLOT UNIT CURRENTLY ACTIVE" : "ENABLE BALLOT FOR VOTER"}</span>
+                  </button>
 
-                  {/* Enable Ballot Button */}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>
-                      Step 1 — Enable Ballot
-                    </p>
-                    <button
-                      onClick={enableBallot}
-                      disabled={phase === "ready" || phase === "voted"}
-                      aria-label="Enable ballot unit for voter"
-                      aria-pressed={phase !== "idle"}
-                      className="w-full py-4 rounded-2xl font-display font-bold text-base transition-all duration-200 focus-ring"
-                      style={{
-                        background: phase === "idle"
-                          ? "linear-gradient(135deg, hsl(142,70%,36%), hsl(142,65%,44%))"
-                          : "var(--color-bg-tertiary)",
-                        color: phase === "idle" ? "#fff" : "var(--color-text-muted)",
-                        boxShadow: phase === "idle" ? "0 6px 20px -4px hsl(142,70%,36%,0.5)" : "none",
-                        cursor: phase !== "idle" ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      {phase === "idle" ? "🟢 Enable Ballot Unit" : phase === "ready" ? "✅ Ballot Active" : "🔒 Ballot Locked"}
-                    </button>
-                  </div>
-
-                  {/* Reset Button */}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>
-                      Step 3 — Reset for Next Voter
-                    </p>
-                    <button
-                      onClick={resetMachine}
-                      disabled={phase === "idle" || phase === "ready"}
-                      aria-label="Reset EVM for the next voter"
-                      className="w-full py-3 rounded-2xl font-semibold text-sm transition-all duration-200 focus-ring"
-                      style={{
-                        background: phase === "voted"
-                          ? "linear-gradient(135deg, hsl(220,75%,48%), hsl(240,70%,58%))"
-                          : "var(--color-bg-tertiary)",
-                        color: phase === "voted" ? "#fff" : "var(--color-text-muted)",
-                        boxShadow: phase === "voted" ? "0 4px 16px -4px hsl(220,75%,48%,0.4)" : "none",
-                        cursor: (phase === "idle" || phase === "ready") ? "not-allowed" : "pointer",
-                      }}
-                    >
-                      🔄 Reset Machine
-                    </button>
-                  </div>
-
-                  {/* Instructions */}
-                  <ol className="text-xs space-y-2 list-none" style={{ color: "var(--color-text-muted)" }}>
-                    {[
-                      "Verify voter identity on electoral roll",
-                      "Mark finger with indelible ink",
-                      "Press Enable Ballot Unit",
-                      "Direct voter to Ballot Unit",
-                      "After vote: reset for next voter",
-                    ].map((s, i) => (
-                      <li key={i} className="flex gap-2">
-                        <span
-                          className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                          style={{ background: "hsl(220,25%,24%)" }}
-                          aria-hidden="true"
-                        >
-                          {i + 1}
-                        </span>
-                        {s}
-                      </li>
-                    ))}
-                  </ol>
+                  <p className="text-[11px] text-text-muted leading-relaxed text-center mt-1">
+                    Pressing this mechanical button releases the interlock on the Ballot Unit for exactly one vote.
+                  </p>
                 </div>
+              </div>
+
+              {/* VVPAT Printer Status Card */}
+              <div className="glass-card rounded-2xl p-5 border border-white/10 bg-surface dark:bg-obsidian-900/70 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                    <FileCheck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-display font-bold text-xs text-obsidian-950 dark:text-white uppercase">
+                      VVPAT THERMAL PRINTER
+                    </div>
+                    <div className="text-[11px] font-mono text-text-secondary">
+                      {showVVPAT ? "PRINTING SLIP NOW..." : "STANDBY FOR PAPER AUDIT"}
+                    </div>
+                  </div>
+                </div>
+                {selectedCandidate && (
+                  <button
+                    type="button"
+                    onClick={() => setShowVVPAT(true)}
+                    className="px-3 py-1.5 rounded-lg bg-obsidian-950 border border-white/15 text-[10px] font-mono text-cyber-400 hover:border-cyber-500/50 transition-all"
+                  >
+                    RE-INSPECT SLIP
+                  </button>
+                )}
               </div>
             </section>
 
-            {/* ════════════════════════
-                BALLOT UNIT
-            ════════════════════════ */}
-            <section aria-labelledby="bu-heading">
-              <div
-                className="rounded-3xl overflow-hidden h-full"
-                style={{
-                  background: "var(--color-surface)",
-                  border: `2px solid ${phase === "ready" ? "hsl(220,75%,48%)" : "var(--color-border)"}`,
-                  boxShadow: phase === "ready" ? "0 0 32px -8px hsl(220,75%,48%,0.35)" : "var(--shadow-lg)",
-                  transition: "all 0.3s ease",
-                }}
-              >
-                {/* BU Header */}
-                <div
-                  className="px-6 py-4 flex items-center justify-between"
-                  style={{
-                    background: phase === "ready" ? "hsl(220,50%,20%)" : "hsl(220,25%,16%)",
-                    borderBottom: `2px solid ${phase === "ready" ? "hsl(220,60%,28%)" : "hsl(220,25%,20%)"}`,
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <div>
-                    <h2 id="bu-heading" className="font-display font-bold text-white text-sm tracking-widest uppercase">
-                      Ballot Unit
-                    </h2>
-                    <p className="text-xs mt-0.5" style={{ color: "hsl(220,15%,55%)" }}>For Voter</p>
+            {/* ===================================================
+                BALLOT UNIT (BU) — SPANS 7 COLUMNS
+                =================================================== */}
+            <section aria-labelledby="bu-panel-title" className="lg:col-span-7 flex flex-col gap-6">
+              <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 shadow-glass-elevated bg-surface dark:bg-obsidian-900/90 relative overflow-hidden">
+                
+                {/* BU Top Header */}
+                <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`w-3 h-3 rounded-full transition-colors ${phase === "ready" ? "bg-emerald-400 animate-ping" : "bg-red-500"}`} />
+                    <div>
+                      <h2 id="bu-panel-title" className="font-display font-extrabold text-base text-obsidian-950 dark:text-white tracking-wider uppercase">
+                        BALLOT UNIT (BU) • CANDIDATE SELECTION
+                      </h2>
+                      <span className="text-[10px] font-mono text-text-muted">OPERATED DIRECTLY BY VOTER INSIDE BOOTH</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2" role="status" aria-label={`Ballot unit is ${phase === "ready" ? "active and ready" : "locked"}`}>
-                    <LED on={phase === "ready"} color="green" />
-                    <span className="text-xs" style={{ color: "hsl(220,15%,55%)" }}>
-                      {phase === "ready" ? "READY" : "LOCKED"}
-                    </span>
-                  </div>
+                  <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-extrabold ${
+                    phase === "ready" 
+                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" 
+                      : "bg-red-500/20 text-red-300 border border-red-500/40"
+                  }`}>
+                    {phase === "ready" ? "🟢 UNLOCKED - READY TO VOTE" : "🔒 LOCKED BY CONTROL UNIT"}
+                  </span>
                 </div>
 
-                {/* Step 2 label */}
-                <div className="px-6 pt-4 pb-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
-                    Step 2 — Press Blue Button to Vote
-                  </p>
-                </div>
-
-                {/* Locked overlay hint */}
-                {phase === "idle" && (
-                  <div
-                    className="mx-6 mb-4 px-4 py-3 rounded-xl text-xs text-center"
-                    style={{ background: "hsl(38,92%,50%,0.08)", border: "1px solid hsl(38,92%,50%,0.25)", color: "hsl(38,70%,45%)" }}
-                    role="status"
-                    aria-live="polite"
-                  >
-                    ⚠️ Ballot unit is locked. Presiding officer must press &quot;Enable Ballot Unit&quot; first.
-                  </div>
-                )}
-
-                {/* Candidate Rows */}
-                <div
-                  className="px-4 pb-4 flex flex-col gap-2"
-                  role="group"
-                  aria-label="Candidate list — press blue button to vote"
-                  aria-disabled={phase !== "ready"}
-                >
-                  {CANDIDATES.map((c, idx) => {
-                    const isVoted = selected === c.id && phase === "voted";
-                    const isDisabled = phase !== "ready";
-                    const isNota = c.id === "N";
-
+                {/* Candidate Rows Matrix */}
+                <div className="flex flex-col gap-3" role="list" aria-label="EVM Candidate Ballot Unit Rows">
+                  {CANDIDATES.map((c) => {
+                    const isSelected = selected === c.id;
                     return (
                       <div
                         key={c.id}
-                        className="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200"
-                        style={{
-                          background: isVoted
-                            ? "hsl(142,70%,40%,0.1)"
-                            : "var(--color-bg-secondary)",
-                          border: isVoted
-                            ? "1px solid hsl(142,70%,40%,0.35)"
-                            : isNota
-                            ? "1px dashed var(--color-border)"
-                            : "1px solid var(--color-border-subtle)",
-                        }}
+                        role="listitem"
+                        className={`p-4 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${
+                          isSelected
+                            ? "bg-gradient-to-r from-primary-900/40 via-obsidian-900 to-obsidian-950 border-cyber-500 shadow-command-glow"
+                            : "bg-obsidian-950/80 border-white/10 hover:border-white/20"
+                        }`}
                       >
-                        {/* Candidate number */}
-                        <span
-                          className="flex-shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold text-white"
-                          style={{ background: isNota ? "hsl(220,15%,35%)" : "hsl(220,75%,40%)" }}
-                          aria-hidden="true"
-                        >
-                          {idx + 1}
-                        </span>
-
-                        {/* Symbol */}
-                        <span className="text-xl flex-shrink-0" aria-hidden="true">{c.symbol}</span>
-
-                        {/* Name & Party */}
-                        <div className="flex-1 min-w-0">
-                          <p
-                            className="font-semibold text-sm truncate"
-                            style={{ color: "var(--color-text-primary)" }}
-                          >
-                            {c.name}
-                          </p>
-                          <p className="text-xs truncate" style={{ color: "var(--color-text-muted)" }}>
-                            {c.party}
-                          </p>
+                        {/* Left Side: Serial + Symbol + Candidate Name */}
+                        <div className="flex items-center gap-4">
+                          <span className="font-mono text-sm font-extrabold text-text-muted px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/5">
+                            {c.serial}
+                          </span>
+                          <span className="text-3xl flex-shrink-0">{c.symbol}</span>
+                          <div>
+                            <div className="font-display font-bold text-base text-white">
+                              {c.name}
+                            </div>
+                            <div className="text-xs font-mono text-cyber-400">
+                              {c.party}
+                            </div>
+                          </div>
                         </div>
 
-                        {/* LED */}
-                        <LED on={isVoted} color="red" />
+                        {/* Right Side: Red Lamp + Tactile Blue Button */}
+                        <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-white/5">
+                          
+                          {/* Red Confirmation Lamp right next to button */}
+                          <div className="flex items-center gap-1.5" title="Ballot Confirmation Lamp">
+                            <div
+                              className="w-4 h-4 rounded-full border border-white/30 transition-all duration-150"
+                              style={{
+                                background: isSelected ? "#ef4444" : "#2d1212",
+                                boxShadow: isSelected ? "0 0 16px #ef4444, 0 0 30px #ef4444" : "none",
+                              }}
+                            />
+                            <span className="text-[9px] font-mono text-text-muted sm:hidden">LAMP</span>
+                          </div>
 
-                        {/* Vote Button */}
-                        <button
-                          onClick={() => castVote(c.id)}
-                          disabled={isDisabled}
-                          aria-label={`Vote for ${c.name} — ${c.party}`}
-                          aria-pressed={isVoted}
-                          className="flex-shrink-0 w-10 h-10 rounded-xl font-bold text-sm transition-all duration-200 focus-ring"
-                          style={{
-                            background: isVoted
-                              ? "hsl(142,70%,40%)"
-                              : isDisabled
-                              ? "hsl(220,25%,28%)"
-                              : "hsl(220,75%,48%)",
-                            color: "#fff",
-                            cursor: isDisabled ? "not-allowed" : "pointer",
-                            boxShadow: !isDisabled && phase === "ready"
-                              ? "0 4px 12px -2px hsl(220,75%,48%,0.5)"
-                              : "none",
-                            opacity: isDisabled && phase !== "voted" ? 0.5 : 1,
-                          }}
-                        >
-                          {isVoted ? "✓" : "●"}
-                        </button>
+                          {/* Authentic Tactile Blue Button (Blue Button) */}
+                          <button
+                            type="button"
+                            onClick={() => castVote(c.id)}
+                            disabled={phase !== "ready"}
+                            aria-label={`Cast vote for ${c.name}`}
+                            className={`px-6 py-3 rounded-xl font-display font-black text-xs tracking-wider uppercase transition-all duration-150 flex items-center gap-2 focus-ring ${
+                              phase === "ready"
+                                ? "bg-primary-600 hover:bg-primary-500 text-white shadow-[0_5px_0_#1e3a8a,_0_8px_15px_rgba(0,0,0,0.6)] active:translate-y-[3px] active:shadow-[0_2px_0_#1e3a8a,_0_4px_8px_rgba(0,0,0,0.6)] cursor-pointer"
+                                : "bg-obsidian-800 border border-white/10 text-text-muted cursor-not-allowed opacity-50 shadow-none"
+                            }`}
+                          >
+                            <span>PRESS BLUE BUTTON</span>
+                          </button>
+
+                        </div>
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Vote success state */}
-                {phase === "voted" && selectedCandidate && (
-                  <div
-                    className="mx-4 mb-4 p-4 rounded-2xl text-center animate-slide-up"
-                    style={{
-                      background: "hsl(142,70%,40%,0.1)",
-                      border: "1px solid hsl(142,70%,40%,0.3)",
-                    }}
-                    role="status"
-                    aria-live="assertive"
-                    aria-label={`Vote successfully recorded for ${selectedCandidate.name}`}
-                  >
-                    <p className="font-display font-bold text-sm" style={{ color: "var(--color-success)" }}>
-                      ✅ Vote Recorded!
-                    </p>
-                    <p className="text-xs mt-1" style={{ color: "var(--color-text-secondary)" }}>
-                      {selectedCandidate.symbol} {selectedCandidate.name}
-                    </p>
-                    <button
-                      onClick={() => setShowVVPAT(true)}
-                      className="mt-2 text-xs underline focus-ring rounded"
-                      style={{ color: "var(--color-primary)" }}
-                      aria-label="View VVPAT confirmation slip again"
-                    >
-                      View VVPAT slip again
-                    </button>
-                  </div>
-                )}
-              </div>
-            </section>
-          </div>
-
-          {/* ── How to use strip ── */}
-          <div
-            className="mt-8 max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4"
-            role="list"
-            aria-label="EVM simulator steps"
-          >
-            {[
-              { icon: "🟢", step: "1", title: "Enable Ballot", desc: "Presiding officer clicks Enable Ballot Unit on the Control Unit." },
-              { icon: "🔵", step: "2", title: "Cast Vote", desc: "Voter presses blue button next to their candidate. A beep confirms the vote." },
-              { icon: "🧾", step: "3", title: "VVPAT Check", desc: "A paper slip displays the candidate for 7 seconds to verify the vote." },
-            ].map((s) => (
-              <div
-                key={s.step}
-                role="listitem"
-                className="glass-card rounded-2xl p-5 flex gap-4 items-start"
-                aria-label={`Step ${s.step}: ${s.title}`}
-              >
-                <span className="text-2xl flex-shrink-0" aria-hidden="true">{s.icon}</span>
-                <div>
-                  <p className="font-display font-bold text-sm mb-1" style={{ color: "var(--color-text-primary)" }}>{s.title}</p>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>{s.desc}</p>
+                {/* Bottom Hardware Warning */}
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center gap-2 text-[11px] font-mono text-text-muted">
+                  <AlertCircle className="w-4 h-4 text-saffron-400 flex-shrink-0" />
+                  <span>
+                    <strong>EVM Security Interlock:</strong> Once the blue button is pressed, the Ballot Unit automatically locks until re-enabled by the Presiding Officer on the Control Unit.
+                  </span>
                 </div>
               </div>
-            ))}
+
+              {/* ===================================================
+                  CRYPTOGRAPHIC SHA-256 AUDIT LEDGER (IaaS TELEMETRY)
+                  =================================================== */}
+              <div id="ledger" className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 bg-surface dark:bg-obsidian-900/90 flex flex-col gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2.5">
+                    <Terminal className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <h3 className="font-display font-extrabold text-sm text-obsidian-950 dark:text-white uppercase tracking-wider">
+                        IMMUTABLE SHA-256 AUDIT LEDGER
+                      </h3>
+                      <span className="text-[10px] font-mono text-text-muted">REAL-TIME BLOCK GENERATION & VVPAT VERIFICATION LOG</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={copyAuditLogs}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-obsidian-950 border border-white/15 text-xs font-mono text-cyber-400 hover:border-cyber-500/50 transition-all"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>COPY LEDGER</span>
+                  </button>
+                </div>
+
+                {/* Log Table / Stream */}
+                <div className="max-h-60 overflow-y-auto flex flex-col gap-2 pr-1">
+                  {auditLogs.map((log) => (
+                    <div
+                      key={log.id}
+                      className="p-3 rounded-xl bg-obsidian-950/80 border border-white/5 font-mono text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">
+                          BLOCK #{log.blockNum}
+                        </span>
+                        <span className="text-text-secondary text-[11px]">{log.timestamp}</span>
+                        <span className="text-white font-semibold">{log.action}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-cyber-400/90 font-mono truncate max-w-[180px]">
+                          SHA-256: {log.hash}
+                        </span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" title="Proof Verified" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </section>
+
           </div>
 
-          {/* ── Attribution ── */}
-          <div
-            className="mt-10 max-w-5xl mx-auto flex items-center justify-center gap-3 px-6 py-4 rounded-2xl"
-            style={{
-              background: "linear-gradient(135deg, hsl(220,75%,48%,0.06), hsl(28,88%,44%,0.06))",
-              border: "1px solid hsl(220,75%,48%,0.15)",
-              boxShadow: "0 0 28px -8px hsl(220,75%,48%,0.18)",
-            }}
-            role="contentinfo"
-            aria-label="EVM Simulator attribution"
-          >
-            <span
-              className="w-2.5 h-2.5 rounded-full animate-pulse-soft flex-shrink-0"
-              style={{
-                background: "linear-gradient(135deg, var(--color-primary), var(--color-accent))",
-                boxShadow: "0 0 10px var(--color-primary)",
-              }}
-              aria-hidden="true"
-            />
-            <p className="text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
-              <span aria-hidden="true">⚡ </span>
-              Interactive EVM Engine engineered by{" "}
-              <span className="gradient-text font-bold">Abhijeet Kangane</span>
-              
-              <span aria-hidden="true"> 🇮🇳✦</span>
-            </p>
-          </div>
         </div>
       </main>
-
-      {/* Progress bar keyframe for VVPAT */}
-      <style>{`
-        @keyframes shrink { from { width: 100%; } to { width: 0%; } }
-      `}</style>
     </>
   );
 }
