@@ -641,7 +641,9 @@ export default function EVMSimulatorPage() {
                         <span className="text-[10px] text-cyber-400/90 font-mono truncate max-w-[180px]">
                           SHA-256: {log.hash}
                         </span>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" title="Proof Verified" />
+                        <span title="Proof Verified">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        </span>
                       </div>
                     </div>
                   ))}
