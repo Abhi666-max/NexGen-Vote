@@ -1,14 +1,20 @@
 "use client";
 
+/**
+ * Enterprise High-Density Footer — NexGen Civic OS
+ * Architected by Founder: Abhijeet Kangane (35-Year Veteran Level SaaS / IaaS Precision)
+ * Minimalist, high-contrast, Vercel/Linear style footer with exact founder credit and social links.
+ */
+
 import Link from "next/link";
 import { 
   ShieldCheck, 
   Terminal, 
-  Activity, 
   CheckCircle2, 
   ExternalLink, 
   Cpu,
-  Lock
+  Lock,
+  Heart
 } from "lucide-react";
 
 /* ========================================================
@@ -37,7 +43,6 @@ const FOOTER_LINKS = [
   {
     group: "Platform Architecture",
     links: [
-      { label: "System Telemetry & Status", href: "#status", ariaLabel: "View system status" },
       { label: "AI Model Persona Specs", href: "/voter-mitra#specs", ariaLabel: "View Gemini AI specifications" },
       { label: "Geospatial Vector Engine", href: "/booth-locator#engine", ariaLabel: "View Google Maps API specs" },
       { label: "MIT License & Open Source", href: "https://github.com/abhi666-max/NexGen-Vote", ariaLabel: "View source code repository", isExternal: true },
@@ -46,11 +51,11 @@ const FOOTER_LINKS = [
 ] as const;
 
 /* ========================================================
-   SOCIAL CONNECTIONS (Inline SVG Vectors)
+   SOCIAL CONNECTIONS (Exact Founder Links + Vector SVGs)
    ======================================================== */
 const SOCIAL_LINKS = [
   {
-    label: "GitHub Repository — NexGen Vote",
+    label: "GitHub — Abhijeet Kangane",
     href: "https://github.com/abhi666-max",
     icon: ({ className }: { className?: string }) => (
       <svg className={className || "w-4 h-4 fill-current"} viewBox="0 0 24 24" aria-hidden="true">
@@ -59,20 +64,29 @@ const SOCIAL_LINKS = [
     ),
   },
   {
-    label: "Abhijeet Kangane on X / Twitter",
-    href: "https://x.com/abhijeet_037",
+    label: "LinkedIn — Abhijeet Kangane",
+    href: "https://www.linkedin.com/in/abhijeet-kangane/",
     icon: ({ className }: { className?: string }) => (
-      <svg className={className || "w-3.5 h-3.5 fill-current"} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      <svg className={className || "w-4 h-4 fill-current"} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
       </svg>
     ),
   },
   {
-    label: "Connect with Abhijeet Kangane on LinkedIn",
-    href: "https://www.linkedin.com/in/abhijeet-kangane-0578b2395/",
+    label: "Instagram — Abhijeet Kangane (@abhijeet.037)",
+    href: "https://www.instagram.com/abhijeet.037/",
     icon: ({ className }: { className?: string }) => (
       <svg className={className || "w-4 h-4 fill-current"} viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+      </svg>
+    ),
+  },
+  {
+    label: "X / Twitter — Abhijeet Kangane (@abhijeet_037)",
+    href: "https://x.com/abhijeet_037",
+    icon: ({ className }: { className?: string }) => (
+      <svg className={className || "w-3.5 h-3.5 fill-current"} viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
       </svg>
     ),
   },
@@ -88,63 +102,60 @@ export function Footer() {
     <footer
       role="contentinfo"
       aria-label="NexGen Civic OS Site Footer"
-      className="mt-auto border-t transition-colors duration-300 border-border bg-surface dark:bg-obsidian-950 relative overflow-hidden"
+      className="mt-auto border-t border-white/[0.08] bg-surface dark:bg-obsidian-950 relative overflow-hidden transition-colors duration-300"
     >
-      {/* Subtle Background Mesh Glow */}
-      <div className="absolute inset-0 bg-command-mesh opacity-30 pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyber-500/40 to-transparent" aria-hidden="true" />
+      {/* Subtle Top Accent Glow Line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" aria-hidden="true" />
 
-      {/* ---- Top Section ---- */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+      {/* ---- Main Footer Content ---- */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
 
-          {/* Brand & Mission Column (Span 2) */}
-          <div className="lg:col-span-2 flex flex-col justify-between">
+          {/* Brand & Founder Card (Span 2) */}
+          <div className="lg:col-span-2 flex flex-col justify-between gap-6">
             <div>
               <Link
                 href="/"
                 aria-label="NexGen Civic OS — Return to overview"
-                className="inline-flex items-center gap-3 mb-5 focus-ring rounded-xl group"
+                className="inline-flex items-center gap-2.5 mb-4 focus-ring rounded-xl group"
                 style={{ textDecoration: "none" }}
               >
-                <div
-                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-cyber-600 border border-white/20 shadow-md group-hover:scale-105 transition-transform duration-300"
-                >
-                  <ShieldCheck className="w-5 h-5 text-white" aria-hidden="true" />
+                <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 via-cyber-500 to-electric-600 border border-white/20 shadow-md group-hover:scale-105 transition-transform duration-300">
+                  <ShieldCheck className="w-4 h-4 text-white" aria-hidden="true" />
                 </div>
-                <div className="flex flex-col">
-                  <div className="font-display font-extrabold text-xl leading-tight tracking-tight">
-                    <span className="gradient-text">NexGen</span>
-                    <span className="text-obsidian-950 dark:text-white font-semibold"> Civic OS</span>
-                  </div>
-                  <span className="text-[10px] font-mono tracking-widest text-cyber-500 font-bold uppercase">
-                    Democracy Intelligence Twin
+                <div className="flex items-center gap-1.5 font-display font-extrabold text-lg tracking-tight">
+                  <span className="bg-gradient-to-r from-white via-cyber-200 to-cyber-400 bg-clip-text text-transparent">
+                    NexGen
                   </span>
+                  <span className="text-text-primary font-semibold">Civic OS</span>
                 </div>
               </Link>
 
-              <p className="text-sm leading-relaxed max-w-sm text-text-secondary mb-6">
-                Next-generation civic infrastructure designed to demystify India’s electoral ecosystem. 
-                Featuring interactive EVM hardware digital twins, AI-assisted voter intelligence, and verifiable election education.
+              <p className="text-xs leading-relaxed max-w-sm text-text-secondary mb-6">
+                Enterprise Civic Intelligence & Digital Twin Infrastructure. Designed with high-availability SHA-256 cryptographic logging and ultra-fast AI inference.
               </p>
 
-              {/* Live Telemetry Status Box */}
-              <div id="status" className="inline-flex items-center gap-3 px-3.5 py-2 rounded-xl bg-obsidian-900 border border-emerald-500/30 text-xs font-mono text-text-secondary mb-6 shadow-sm">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-                </span>
-                <span className="text-emerald-400 font-bold">ALL CIVIC NODES OPERATIONAL</span>
-                <span className="text-white/20">|</span>
-                <span className="flex items-center gap-1 text-cyber-400">
-                  <Lock className="w-3 h-3" /> SHA-256
-                </span>
+              {/* Exact Founder Spotlight Banner */}
+              <div className="p-4 rounded-2xl bg-obsidian-900/80 border border-white/10 shadow-lg flex flex-col gap-2">
+                <div className="flex items-center justify-between text-[11px] font-mono text-cyber-400 uppercase tracking-wider">
+                  <span>FOUNDER & ARCHITECT</span>
+                  <span className="px-2 py-0.5 rounded bg-cyber-500/10 border border-cyber-500/20 text-[10px] font-bold">
+                    35-YR LEVEL IAAS
+                  </span>
+                </div>
+                <div className="font-display font-black text-base text-white flex items-center gap-2">
+                  <span>Abhijeet Kangane</span>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                </div>
               </div>
             </div>
 
-            {/* Social Links */}
-            <nav aria-label="Social media profiles" className="mt-2">
-              <ul className="flex items-center gap-3 list-none p-0 m-0" role="list">
+            {/* Exact 4 Social Media Connect Icons */}
+            <div>
+              <span className="text-[11px] font-mono text-text-muted uppercase tracking-wider block mb-2.5">
+                Connect with Founder:
+              </span>
+              <ul className="flex items-center gap-2.5 list-none p-0 m-0" role="list">
                 {SOCIAL_LINKS.map((s) => {
                   const Icon = s.icon;
                   return (
@@ -154,7 +165,7 @@ export function Footer() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={s.label}
-                        className="flex items-center justify-center w-10 h-10 rounded-xl bg-obsidian-900 border border-border/80 text-text-secondary hover:text-cyber-400 hover:border-cyber-500/50 hover:shadow-command-glow focus-ring transition-all duration-200"
+                        className="flex items-center justify-center w-10 h-10 rounded-xl bg-obsidian-900/90 border border-white/10 text-text-secondary hover:text-white hover:border-cyber-400/50 hover:bg-white/[0.06] hover:shadow-[0_0_15px_-3px_#06b6d4] focus-ring transition-all duration-200"
                       >
                         <Icon className="w-4 h-4" />
                       </a>
@@ -162,16 +173,16 @@ export function Footer() {
                   );
                 })}
               </ul>
-            </nav>
+            </div>
           </div>
 
-          {/* Categorized Links (Span 3) */}
+          {/* Categorized SaaS Links (Span 3) */}
           {FOOTER_LINKS.map((group) => (
             <div key={group.group} className="flex flex-col gap-3">
-              <h3 className="font-display font-bold text-xs uppercase tracking-wider text-obsidian-950 dark:text-white border-l-2 border-cyber-500 pl-2.5">
+              <h3 className="font-display font-bold text-xs uppercase tracking-wider text-white">
                 {group.group}
               </h3>
-              <ul className="flex flex-col gap-2.5 list-none p-0 m-0" role="list">
+              <ul className="flex flex-col gap-2 list-none p-0 m-0" role="list">
                 {group.links.map((link) => (
                   <li key={link.label}>
                     <Link
@@ -179,13 +190,13 @@ export function Footer() {
                       target={"isExternal" in link && link.isExternal ? "_blank" : undefined}
                       rel={"isExternal" in link && link.isExternal ? "noopener noreferrer" : undefined}
                       aria-label={link.ariaLabel}
-                      className="text-xs font-medium text-text-secondary hover:text-cyber-400 transition-colors duration-150 flex items-center gap-1 group"
+                      className="text-xs text-text-secondary hover:text-white transition-colors duration-150 flex items-center gap-1 group"
                     >
                       <span className="group-hover:translate-x-0.5 transition-transform duration-150">
                         {link.label}
                       </span>
                       {"isExternal" in link && link.isExternal && (
-                        <ExternalLink className="w-3 h-3 opacity-60 group-hover:opacity-100 text-cyber-400" />
+                        <ExternalLink className="w-3 h-3 opacity-50 group-hover:opacity-100 text-cyber-400" />
                       )}
                     </Link>
                   </li>
@@ -198,21 +209,21 @@ export function Footer() {
       </div>
 
       {/* ---- Bottom Bar ---- */}
-      <div className="border-t border-border/60 bg-obsidian-950/90 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-text-muted">
-          <div className="flex items-center gap-2">
-            <span>© {currentYear} NexGen Civic OS. Built for Indian Democracy.</span>
+      <div className="border-t border-white/[0.06] bg-obsidian-950/95 py-5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-text-muted">
+          <div>
+            <span>© {currentYear} NexGen Civic OS. All rights reserved.</span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5 text-text-secondary">
               <Cpu className="w-3.5 h-3.5 text-cyber-400" />
               Next.js 15 App Router
             </span>
-            <span className="text-border">|</span>
+            <span className="text-white/10">|</span>
             <span className="flex items-center gap-1.5 text-text-secondary">
               <Terminal className="w-3.5 h-3.5 text-electric-400" />
-              Architected by <span className="text-cyber-400 font-bold">Abhijeet Kangane</span>
+              Architected by <strong className="text-white">Abhijeet Kangane</strong>
             </span>
           </div>
         </div>
