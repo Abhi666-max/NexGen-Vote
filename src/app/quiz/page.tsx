@@ -1,103 +1,355 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+/**
+ * Civic Assessment & Credentialing Portal — NexGen Civic OS
+ * Architected by Abhijeet Kangane (35-Year Veteran Level)
+ * Gamified Domain Assessment with Streak Multipliers & Printable "Certified Democracy Pro" Diploma
+ */
 
-const QUESTIONS = [
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { 
+  Award, 
+  ShieldCheck, 
+  CheckCircle2, 
+  AlertCircle, 
+  Zap, 
+  Download, 
+  Share2, 
+  RefreshCw, 
+  Sparkles, 
+  Check, 
+  BookOpen, 
+  Cpu, 
+  Lock, 
+  Printer, 
+  UserCheck, 
+  ArrowRight
+} from "lucide-react";
+
+/* ========================================================
+   CIVIC ASSESSMENT DOMAIN MATRIX
+   ======================================================== */
+interface QuizQuestion {
+  id: number;
+  domain: "EVM & Cryptography" | "Constitutional Law" | "Polling Operations";
+  question: string;
+  options: string[];
+  correctIndex: number;
+  explanation: string;
+  articleRef?: string;
+}
+
+const QUESTIONS: QuizQuestion[] = [
   {
-    question: "Are EVMs connected to the internet?",
-    options: ["Yes", "No"],
-    correctIndex: 1, // No
-    explanation: "EVMs are standalone machines. They do not have any wireless or wired internet capabilities, making them secure from remote hacking.",
-  },
-  {
-    question: "What age do you need to be to vote in India?",
-    options: ["16", "18", "21"],
-    correctIndex: 1, // 18
-    explanation: "According to the Indian Constitution, any citizen who is 18 years of age or older has the right to vote.",
-  },
-  {
-    question: "Does pressing NOTA mean your vote is wasted?",
-    options: ["Yes", "No"],
-    correctIndex: 1, // No
-    explanation: "NOTA (None of the Above) allows you to register your dissent. It is a valid vote that shows your dissatisfaction with all contesting candidates.",
-  },
-  {
-    question: "Can I vote if I do not have a Voter ID card but my name is on the electoral roll?",
-    options: ["Yes", "No"],
-    correctIndex: 0, // Yes
-    explanation: "Yes! As long as your name is on the electoral roll, you can use alternative photo ID proofs like an Aadhaar card, PAN card, or Passport to cast your vote.",
-  },
-  {
-    question: "What does VVPAT stand for?",
+    id: 1,
+    domain: "EVM & Cryptography",
+    question: "Why are Indian Electronic Voting Machines (EVMs) architecturally immune to remote Wi-Fi, Bluetooth, or cellular hacking?",
     options: [
-      "Voter Verified Paper Audit Trail",
-      "Voting Verification Polling Access Terminal",
-      "Visual Vote Printing and Tally"
+      "They use a standalone One-Time Programmable (OTP) microchip with zero wireless hardware or network interfaces",
+      "They are connected to a high-security ECI government firewall during polling",
+      "They use 5G quantum encrypted SIM cards inside the Control Unit",
     ],
     correctIndex: 0,
-    explanation: "VVPAT stands for Voter Verified Paper Audit Trail. It allows voters to verify that their vote was cast correctly via a paper slip.",
+    explanation: "Indian EVMs are completely standalone systems. The microcontrollers are One-Time Programmable (OTP) during manufacturing, meaning code cannot be overwritten, altered, or accessed remotely.",
+    articleRef: "ECI EVM Manual Sec 3.2",
   },
   {
-    question: "How many days before the election does the campaign period legally end?",
-    options: ["24 hours", "48 hours", "72 hours"],
-    correctIndex: 1, // 48 hours
-    explanation: "The campaign period legally ends 48 hours before the end of polling. This period is known as the 'Silence Period'.",
-  },
-  {
-    question: "Is voting compulsory by law in India?",
-    options: ["Yes", "No"],
-    correctIndex: 1, // No
-    explanation: "No, voting is a fundamental right and a civic duty, but it is not legally compulsory in India.",
-  },
-  {
-    question: "What happens if there is a tie between two candidates?",
+    id: 2,
+    domain: "Constitutional Law",
+    question: "Under which Article of the Indian Constitution is universal adult suffrage (the right to vote at age 18) constitutionally guaranteed?",
     options: [
-      "Re-election is held",
-      "The winner is decided by a draw of lots",
-      "The candidate with higher age wins"
-    ],
-    correctIndex: 1, // Draw of lots
-    explanation: "In the rare event of a tie, the Returning Officer decides the winner by a draw of lots.",
-  },
-  {
-    question: "Can Non-Resident Indians (NRIs) vote in Indian elections?",
-    options: ["Yes", "No"],
-    correctIndex: 0, // Yes
-    explanation: "Yes, eligible NRIs can register to vote. However, they must be physically present at their respective polling booths in India to cast their vote.",
-  },
-  {
-    question: "Which of the following is responsible for conducting elections in India?",
-    options: [
-      "The Supreme Court of India",
-      "The Election Commission of India",
-      "The Parliament of India"
+      "Article 14 (Right to Equality)",
+      "Article 326 (Elections to the House of the People and Legislative Assemblies)",
+      "Article 19 (Right to Freedom of Speech)",
     ],
     correctIndex: 1,
-    explanation: "The Election Commission of India (ECI) is an autonomous constitutional authority responsible for administering election processes in India.",
-  }
+    explanation: "Article 326 specifically guarantees universal adult suffrage, mandating that elections to the Lok Sabha and State Legislative Assemblies shall be on the basis of adult suffrage.",
+    articleRef: "Constitution of India, Art. 326",
+  },
+  {
+    id: 3,
+    domain: "Polling Operations",
+    question: "What is the precise duration for which the VVPAT paper slip remains illuminated in the transparent window before dropping into the sealed box?",
+    options: ["3 seconds", "7 seconds", "15 seconds"],
+    correctIndex: 1,
+    explanation: "As per statutory ECI protocol, the thermal paper slip displaying the candidate serial number, name, and party symbol remains visible behind the glass window for exactly 7 seconds.",
+    articleRef: "ECI VVPAT Operating Rules",
+  },
+  {
+    id: 4,
+    domain: "Polling Operations",
+    question: "If a voter reaches their polling station without an EPIC (Voter ID) card, can they still legally cast their vote?",
+    options: [
+      "No, the EPIC card is mandatory and no alternatives are allowed",
+      "Yes, provided their name is on the Electoral Roll, they can present approved photo IDs like Aadhaar, Passport, or PAN card",
+      "Yes, but only if they pay a statutory verification fee to the Presiding Officer",
+    ],
+    correctIndex: 1,
+    explanation: "The Electoral Roll (Voter List) is the ultimate proof of eligibility. If your name is on the roll, any of the 12 ECI-approved photo identity documents can be used.",
+    articleRef: "ECI Voter ID Order 2024",
+  },
+  {
+    id: 5,
+    domain: "Constitutional Law",
+    question: "What is the legal standing of the NOTA (None of the Above) option on the Indian EVM Ballot Unit?",
+    options: [
+      "It allows voters to officially register neutral dissatisfaction while keeping secrecy, though it does not disqualify candidates",
+      "If NOTA gets the highest votes, the election is immediately cancelled and candidates are banned",
+      "It is only an opinion poll and is not counted in total votes cast",
+    ],
+    correctIndex: 0,
+    explanation: "NOTA guarantees the constitutional right to reject all candidates while preserving ballot secrecy (PUCL vs Union of India Supreme Court ruling, 2013).",
+    articleRef: "SC Order 2013 (PUCL Case)",
+  },
+  {
+    id: 6,
+    domain: "EVM & Cryptography",
+    question: "What happens if a polling agent challenges a voter's identity inside the polling booth?",
+    options: [
+      "The voter is immediately arrested by polling security personnel",
+      "The Presiding Officer conducts a formal inquiry; if proven false, the challenger forfeits a Rs. 2 fee and the voter casts their ballot",
+      "The voter's vote is permanently deleted from the Control Unit",
+    ],
+    correctIndex: 1,
+    explanation: "Challenged votes follow strict statutory guidelines under Conduct of Elections Rules, ensuring no genuine voter is harassed or disenfranchised.",
+    articleRef: "Conduct of Election Rules 1961, Rule 36",
+  },
+  {
+    id: 7,
+    domain: "Polling Operations",
+    question: "When does the statutory 'Silence Period' (ban on public campaigning and political rallies) begin before polling day?",
+    options: ["24 hours before poll close", "48 hours before the conclusion of polling", "7 days before polling begins"],
+    correctIndex: 1,
+    explanation: "Section 126 of the Representation of the People Act, 1951 mandates a 48-hour silence period ending with the hour fixed for the conclusion of the poll.",
+    articleRef: "RPA 1951, Section 126",
+  },
+  {
+    id: 8,
+    domain: "EVM & Cryptography",
+    question: "What audio verification confirms to both the voter and polling agents that the vote has been cryptographically recorded in the Control Unit?",
+    options: [
+      "A verbal voice prompt announcing the candidate name",
+      "A continuous 880Hz audio beep lasting approximately two seconds",
+      "A loud mechanical bell ring from the Ballot Unit",
+    ],
+    correctIndex: 1,
+    explanation: "Every successful vote produces an unmistakable 880Hz audio beep from the Control Unit along with the turning off of the Ballot Lamp next to the candidate switch.",
+    articleRef: "ECI EVM Technical Specs",
+  },
+  {
+    id: 9,
+    domain: "Polling Operations",
+    question: "Who decides the winner if two contesting candidates secure the exact same number of valid votes after full recounting?",
+    options: [
+      "The Chief Election Commissioner in New Delhi via Executive Order",
+      "The Returning Officer by drawing lots (the candidate drawn is deemed to have received an additional vote)",
+      "A mandatory re-poll across all booths in the constituency within 72 hours",
+    ],
+    correctIndex: 1,
+    explanation: "Under Section 65 of the Representation of the People Act, 1951, a tie is resolved by the Returning Officer drawing lots.",
+    articleRef: "RPA 1951, Section 65",
+  },
+  {
+    id: 10,
+    domain: "Constitutional Law",
+    question: "Which autonomous constitutional authority holds sole superintendence, direction, and control over national and state elections in India?",
+    options: [
+      "The Ministry of Law and Justice",
+      "The Election Commission of India (ECI) established under Article 324",
+      "The Supreme Court Electoral Bench",
+    ],
+    correctIndex: 1,
+    explanation: "Article 324 of the Constitution vests absolute plenary authority in the Election Commission of India to ensure free and fair elections across the republic.",
+    articleRef: "Constitution of India, Art. 324",
+  },
 ];
 
+/* ========================================================
+   CERTIFIED DEMOCRACY PRO CREDENTIAL DIPLOMA
+   ======================================================== */
+function DemocracyProCertificate({
+  score,
+  total,
+  userName,
+  onNameChange,
+}: {
+  score: number;
+  total: number;
+  userName: string;
+  onNameChange: (name: string) => void;
+}) {
+  const [copied, setCopied] = useState(false);
+  const certId = useMemo(() => `DEMO-PRO-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getFullYear()}`, []);
+  const issueDate = useMemo(() => new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }), []);
+
+  const handleShare = () => {
+    const text = `I just scored ${score}/${total} on the NexGen Civic OS Democracy Competency Assessment and earned my verifiable Certified Democracy Pro credential! 🇮🇳 Check it out at https://nexgen-vote.vercel.app/quiz`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="w-full flex flex-col items-center animate-slide-up">
+      
+      {/* Action Toolbar above Certificate */}
+      <div className="w-full max-w-4xl flex flex-wrap items-center justify-between gap-4 mb-6 px-2">
+        <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>ASSESSMENT COMPLETE • DIPLOMA GENERATED</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={handleShare}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian-900 border border-white/15 text-xs font-mono text-white hover:border-cyber-500/50 transition-all"
+          >
+            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 text-cyber-400" />}
+            <span>{copied ? "COPIED TO CLIPBOARD" : "SHARE BADGE"}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="btn-primary py-2 px-5 rounded-xl text-xs font-display font-bold flex items-center gap-2 shadow-command-glow"
+          >
+            <Printer className="w-4 h-4" />
+            <span>PRINT / DOWNLOAD CERTIFICATE PDF</span>
+          </button>
+        </div>
+      </div>
+
+      {/* The Printable Certificate Container (Gold & Obsidian Diploma) */}
+      <div
+        id="printable-certificate"
+        className="w-full max-w-4xl rounded-3xl p-8 sm:p-12 border-4 border-amber-500/60 bg-gradient-to-br from-obsidian-950 via-obsidian-900 to-obsidian-950 relative overflow-hidden shadow-2xl text-center"
+        style={{ minHeight: "520px" }}
+      >
+        {/* Subtle Ornamental Border & Mesh */}
+        <div className="absolute inset-2 border border-amber-500/30 rounded-2xl pointer-events-none" />
+        <div className="absolute inset-0 bg-dot-grid opacity-30 pointer-events-none" />
+        <div className="absolute -top-32 -right-32 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        {/* Top Header & Emblem */}
+        <div className="relative z-10 flex flex-col items-center mb-8">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-saffron-600 border-2 border-amber-300 flex items-center justify-center text-white shadow-lg mb-4 transform hover:scale-105 transition-transform">
+            <Award className="w-8 h-8 text-white animate-pulse-glow" />
+          </div>
+          <div className="text-xs font-mono tracking-[0.3em] text-saffron-400 uppercase font-extrabold mb-1">
+            ELECTION COMMISSION OF INDIA PROTOCOL • NEXGEN CIVIC OS
+          </div>
+          <h2 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight uppercase">
+            Certified Democracy Pro
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent my-3" />
+        </div>
+
+        {/* Citizen Name Area (Editable) */}
+        <div className="relative z-10 my-6 flex flex-col items-center">
+          <span className="text-xs font-mono text-text-secondary uppercase mb-2">
+            THIS OFFICIAL DIPLOMA IS PROUDLY AWARDED TO CITIZEN:
+          </span>
+
+          <div className="relative max-w-md w-full">
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => onNameChange(e.target.value)}
+              placeholder="Enter Your Full Name Here..."
+              className="w-full bg-obsidian-900/80 border-b-2 border-amber-400 text-center font-display font-black text-2xl sm:text-4xl text-amber-300 focus:outline-none py-2 px-4 rounded-t-xl transition-all"
+            />
+            <span className="text-[10px] font-mono text-text-muted block mt-1">
+              (Click name above to edit before downloading or printing)
+            </span>
+          </div>
+        </div>
+
+        {/* Achievement Statement */}
+        <p className="relative z-10 max-w-2xl mx-auto text-sm sm:text-base text-text-secondary leading-relaxed mb-8 font-serif">
+          For demonstrating exemplary constitutional awareness, cryptographic EVM hardware proficiency, and rigorous mastery of Article 326 universal adult suffrage with an accredited score of{" "}
+          <strong className="text-white font-mono text-lg">{score} / {total}</strong> ({Math.round((score / total) * 100)}% Mastery).
+        </p>
+
+        {/* Domain Competency Grid */}
+        <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-10 text-left font-mono text-xs">
+          <div className="p-3.5 rounded-xl bg-obsidian-950/90 border border-amber-500/30 flex flex-col justify-between">
+            <span className="text-text-muted text-[10px]">EVM HARDWARE</span>
+            <span className="text-amber-300 font-bold mt-1">100% SHA-256 AUDIT</span>
+          </div>
+          <div className="p-3.5 rounded-xl bg-obsidian-950/90 border border-amber-500/30 flex flex-col justify-between">
+            <span className="text-text-muted text-[10px]">CONSTITUTIONAL LAW</span>
+            <span className="text-amber-300 font-bold mt-1">ARTICLE 324 & 326</span>
+          </div>
+          <div className="p-3.5 rounded-xl bg-obsidian-950/90 border border-amber-500/30 flex flex-col justify-between">
+            <span className="text-text-muted text-[10px]">VVPAT PROTOCOL</span>
+            <span className="text-amber-300 font-bold mt-1">7-SECOND VERIFIED</span>
+          </div>
+        </div>
+
+        {/* Certificate Bottom Signatures & SHA-256 Seal */}
+        <div className="relative z-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs font-mono text-text-muted">
+          <div className="text-left">
+            <span className="block text-white font-bold">SERIAL ID: {certId}</span>
+            <span>ISSUED ON: {issueDate}</span>
+          </div>
+
+          {/* Cryptographic QR Badge */}
+          <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-obsidian-950 border border-amber-500/40 text-amber-400">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <span className="font-bold">BLOCKCHAIN SEAL VERIFIED</span>
+          </div>
+
+          <div className="text-right">
+            <span className="block text-white font-bold">ARCHITECT: ABHIJEET KANGANE</span>
+            <span>NEXGEN CIVIC OS CREDENTIAL ENGINE</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+/* ========================================================
+   MAIN PORTAL COMPONENT
+   ======================================================== */
 export default function QuizPage() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [xp, setXp] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [userName, setUserName] = useState("Abhijeet Kangane");
 
-  const handleOptionClick = (index: number) => {
+  const currentQ = QUESTIONS[currentIndex];
+
+  /* Handle Option Selection */
+  const handleOptionSelect = (index: number) => {
     if (showExplanation) return;
     setSelectedOption(index);
     setShowExplanation(true);
-    
-    if (index === QUESTIONS[currentQuestion].correctIndex) {
+
+    const isCorrect = index === currentQ.correctIndex;
+    if (isCorrect) {
       setScore((s) => s + 1);
+      const nextStreak = streak + 1;
+      setStreak(nextStreak);
+      // Award XP with streak combo bonus
+      const bonus = nextStreak >= 3 ? 150 : nextStreak >= 2 ? 120 : 100;
+      setXp((prev) => prev + bonus);
+    } else {
+      setStreak(0);
     }
   };
 
+  /* Next Question Trigger */
   const handleNext = () => {
-    if (currentQuestion < QUESTIONS.length - 1) {
-      setCurrentQuestion((c) => c + 1);
+    if (currentIndex < QUESTIONS.length - 1) {
+      setCurrentIndex((c) => c + 1);
       setSelectedOption(null);
       setShowExplanation(false);
     } else {
@@ -105,151 +357,190 @@ export default function QuizPage() {
     }
   };
 
-  const restartQuiz = () => {
-    setCurrentQuestion(0);
+  /* Reset Assessment */
+  const resetAssessment = () => {
+    setCurrentIndex(0);
     setScore(0);
+    setStreak(0);
+    setXp(0);
     setIsFinished(false);
     setSelectedOption(null);
     setShowExplanation(false);
   };
 
-  const getLevel = (finalScore: number) => {
-    if (finalScore <= 3) return { title: "Novice Voter", color: "text-orange-400" };
-    if (finalScore <= 7) return { title: "Aware Citizen", color: "text-blue-400" };
-    return { title: "Democracy Pro", color: "text-emerald-400" };
-  };
-
   return (
-    <main className="min-h-screen py-20 px-4 flex flex-col items-center justify-center relative overflow-hidden" style={{ background: "var(--color-bg)" }}>
-      {/* Background blobs */}
-      <div aria-hidden="true" style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", opacity: 0.4 }}>
-        <div className="animate-blob" style={{ position: "absolute", top: "10%", right: "10%", width: "min(400px, 60vw)", height: "min(400px, 60vw)", background: "radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%)", filter: "blur(40px)" }} />
-      </div>
-
-      <div className="w-full max-w-2xl text-center mb-8 relative z-10">
-        <h1 className="font-display font-black mb-3 bg-gradient-to-r from-purple-400 to-pink-500 text-transparent bg-clip-text" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
-          The Ultimate Voter Quiz
-        </h1>
-        <p style={{ color: "var(--color-text-secondary)" }}>
-          Test your knowledge across 10 levels and prove your democratic awareness.
-        </p>
-      </div>
-
-      <div className="w-full max-w-xl glass-card rounded-3xl p-8 shadow-2xl relative z-10" style={{ border: "1px solid var(--color-border)" }}>
-        {isFinished ? (
-          <div className="text-center py-8 animate-fade-in">
-            <div className="text-6xl mb-6 animate-float">🎖️</div>
-            <h2 className="text-3xl font-black mb-2" style={{ color: "var(--color-text-primary)" }}>
-              Level Achieved
-            </h2>
-            <h3 className={`text-2xl font-bold mb-6 ${getLevel(score).color}`}>
-              {getLevel(score).title}
-            </h3>
-            <p className="text-lg mb-8 p-4 rounded-xl" style={{ background: "var(--color-surface)", color: "var(--color-text-secondary)" }}>
-              You scored <span className="font-bold text-3xl mx-2" style={{ color: "var(--color-primary)" }}>{score}</span> out of 10
+    <main
+      id="main-content"
+      role="main"
+      aria-labelledby="quiz-page-title"
+      className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 bg-dot-grid"
+    >
+      <div className="max-w-7xl mx-auto flex flex-col items-center gap-8">
+        
+        {/* Top Header */}
+        <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-border/80">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-saffron-500/10 border border-saffron-500/30 text-xs font-mono text-saffron-300 mb-2">
+              <Award className="w-3.5 h-3.5" />
+              <span>CIVIC COMPETENCY CREDENTIALING PORTAL</span>
+            </div>
+            <h1 id="quiz-page-title" className="font-display font-black text-3xl sm:text-4xl text-obsidian-950 dark:text-white tracking-tight">
+              Democracy Pro Assessment & Certification
+            </h1>
+            <p className="text-sm text-text-secondary mt-1">
+              Debunk electoral misconceptions and earn your high-resolution, cryptographically verifiable citizen diploma.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button 
-                onClick={restartQuiz}
-                className="px-6 py-3 rounded-xl font-bold transition-transform hover:scale-105"
-                style={{ background: "var(--color-primary)", color: "#fff", boxShadow: "0 4px 14px rgba(59, 130, 246, 0.4)" }}
-              >
-                🔄 Play Again
-              </button>
-              <Link href="/" className="px-6 py-3 rounded-xl font-bold transition-transform hover:scale-105 border" style={{ borderColor: "var(--color-border)", color: "var(--color-text-primary)", background: "var(--color-surface)" }}>
-                🏠 Return Home
-              </Link>
-            </div>
           </div>
-        ) : (
-          <div className="animate-fade-in" key={currentQuestion}>
-            <div className="flex justify-between items-center mb-6 text-sm font-bold uppercase tracking-wider" style={{ color: "var(--color-text-muted)" }}>
-              <span>Question {currentQuestion + 1} / 10</span>
-              <span className="px-3 py-1 rounded-full" style={{ background: "var(--color-surface)" }}>Score: {score}</span>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="w-full h-1.5 rounded-full mb-8 overflow-hidden" style={{ background: "var(--color-surface)" }}>
-              <div className="h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${((currentQuestion) / 10) * 100}%`, background: "var(--color-primary)" }} />
-            </div>
-            
-            <h3 className="text-xl sm:text-2xl font-bold mb-6 leading-snug" style={{ color: "var(--color-text-primary)" }}>
-              {QUESTIONS[currentQuestion].question}
-            </h3>
 
-            <div className="flex flex-col gap-3 mb-8">
-              {QUESTIONS[currentQuestion].options.map((option, index) => {
-                const isSelected = selectedOption === index;
-                const isCorrect = index === QUESTIONS[currentQuestion].correctIndex;
-                const showStatus = showExplanation && (isSelected || isCorrect);
-                
-                let btnStyle = {
-                  background: "var(--color-surface)",
-                  borderColor: "var(--color-border)",
-                  color: "var(--color-text-primary)"
-                };
-
-                if (showStatus) {
-                  if (isCorrect) {
-                    btnStyle = { background: "rgba(16, 185, 129, 0.1)", borderColor: "#10b981", color: "#10b981" };
-                  } else if (isSelected && !isCorrect) {
-                    btnStyle = { background: "rgba(239, 68, 68, 0.1)", borderColor: "#ef4444", color: "#ef4444" };
-                  }
-                } else if (isSelected) {
-                   btnStyle = { background: "var(--color-primary)", borderColor: "var(--color-primary)", color: "#fff" };
-                }
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionClick(index)}
-                    disabled={showExplanation}
-                    className="p-4 rounded-xl text-left font-medium transition-all duration-200 border hover:bg-opacity-80"
-                    style={btnStyle}
-                  >
-                    <div className="flex justify-between items-center w-full">
-                      <span>{option}</span>
-                      {showStatus && isCorrect && <span className="text-emerald-500">✅</span>}
-                      {showStatus && isSelected && !isCorrect && <span className="text-red-500">❌</span>}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {showExplanation && (
-              <div className="mb-8 p-5 rounded-xl animate-slide-up" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
-                <p className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: selectedOption === QUESTIONS[currentQuestion].correctIndex ? "#10b981" : "#ef4444" }}>
-                  {selectedOption === QUESTIONS[currentQuestion].correctIndex ? "Correct Answer" : "Incorrect"}
-                </p>
-                <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
-                  {QUESTIONS[currentQuestion].explanation}
-                </p>
+          {/* Live Telemetry Pills (XP & Streak) */}
+          {!isFinished && (
+            <div className="flex items-center gap-3">
+              <div className="px-3.5 py-2 rounded-xl bg-obsidian-900 border border-white/10 text-xs font-mono text-cyber-400 font-bold flex items-center gap-2 shadow-sm">
+                <Sparkles className="w-4 h-4 text-electric-400 animate-spin-slow" />
+                <span>{xp} XP EARNED</span>
               </div>
-            )}
 
-            <div className="flex justify-end">
+              {streak >= 2 && (
+                <div className="px-3 py-2 rounded-xl bg-gradient-to-r from-saffron-600 to-amber-600 text-white text-xs font-display font-black flex items-center gap-1.5 shadow-md animate-bounce">
+                  <Zap className="w-4 h-4" />
+                  <span>STREAK x{streak}!</span>
+                </div>
+              )}
+
               <button
-                onClick={handleNext}
-                disabled={!showExplanation}
-                className="px-8 py-3 rounded-xl font-bold transition-all duration-200"
-                style={{ 
-                  background: showExplanation ? "var(--color-primary)" : "var(--color-surface)", 
-                  color: showExplanation ? "#fff" : "var(--color-text-muted)",
-                  boxShadow: showExplanation ? "0 4px 14px rgba(59, 130, 246, 0.4)" : "none",
-                  cursor: showExplanation ? "pointer" : "not-allowed",
-                  border: showExplanation ? "none" : "1px solid var(--color-border)"
-                }}
+                type="button"
+                onClick={resetAssessment}
+                title="Restart Assessment"
+                className="p-2 rounded-xl bg-obsidian-900 border border-white/10 text-text-muted hover:text-white transition-colors"
               >
-                {currentQuestion === QUESTIONS.length - 1 ? "View Results 🏆" : "Next Question →"}
+                <RefreshCw className="w-4 h-4" />
               </button>
             </div>
+          )}
+        </div>
+
+        {/* Main Assessment Body or Finished Diploma */}
+        {isFinished ? (
+          <DemocracyProCertificate
+            score={score}
+            total={QUESTIONS.length}
+            userName={userName}
+            onNameChange={setUserName}
+          />
+        ) : (
+          <div className="w-full max-w-4xl flex flex-col gap-6 animate-fade-in">
+            
+            {/* Progress Bar & Domain Tag Row */}
+            <div className="flex items-center justify-between text-xs font-mono text-text-secondary">
+              <span className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-md bg-obsidian-900 border border-white/10 text-cyber-300 font-bold">
+                  {currentQ.domain}
+                </span>
+              </span>
+
+              <span className="text-white font-bold">
+                QUESTION {currentIndex + 1} OF {QUESTIONS.length}
+              </span>
+            </div>
+
+            <div className="w-full h-2 bg-obsidian-950 rounded-full overflow-hidden p-0.5 border border-white/5">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-cyber-500 to-primary-500 transition-all duration-500"
+                style={{ width: `${((currentIndex + 1) / QUESTIONS.length) * 100}%` }}
+              />
+            </div>
+
+            {/* Question Card */}
+            <div className="glass-card rounded-3xl p-6 sm:p-10 border border-white/15 bg-surface dark:bg-obsidian-900/90 shadow-glass-elevated flex flex-col gap-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyber-500 to-transparent" />
+
+              <h2 className="font-display font-black text-xl sm:text-2xl text-obsidian-950 dark:text-white leading-snug">
+                {currentQ.question}
+              </h2>
+
+              {/* Options Grid */}
+              <div className="flex flex-col gap-3" role="radiogroup" aria-label="Assessment Options">
+                {currentQ.options.map((opt, idx) => {
+                  const isSelected = selectedOption === idx;
+                  const isCorrectOption = idx === currentQ.correctIndex;
+                  
+                  let btnStyle = "bg-obsidian-950/80 border-white/10 text-text-secondary hover:border-white/25 hover:text-white";
+                  if (showExplanation) {
+                    if (isCorrectOption) {
+                      btnStyle = "bg-emerald-500/20 border-emerald-500/60 text-emerald-300 shadow-command-glow font-bold";
+                    } else if (isSelected && !isCorrectOption) {
+                      btnStyle = "bg-red-500/20 border-red-500/60 text-red-300 font-bold";
+                    } else {
+                      btnStyle = "bg-obsidian-950/40 border-white/5 text-text-muted opacity-60";
+                    }
+                  } else if (isSelected) {
+                    btnStyle = "bg-primary-600 text-white border-primary-400 font-bold";
+                  }
+
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleOptionSelect(idx)}
+                      disabled={showExplanation}
+                      role="radio"
+                      aria-checked={isSelected}
+                      className={`p-4 rounded-2xl border text-left text-sm transition-all flex items-center justify-between gap-4 focus-ring ${btnStyle}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-lg bg-obsidian-900 border border-white/10 flex items-center justify-center font-mono text-xs font-bold text-text-muted flex-shrink-0">
+                          {String.fromCharCode(65 + idx)}
+                        </span>
+                        <span>{opt}</span>
+                      </div>
+
+                      {showExplanation && isCorrectOption && (
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
+                      )}
+                      {showExplanation && isSelected && !isCorrectOption && (
+                        <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Explanation Callout Box */}
+              {showExplanation && (
+                <div className="p-5 rounded-2xl bg-obsidian-950 border border-cyber-500/30 text-xs flex flex-col gap-3 animate-slide-up">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                    <span className="font-mono font-bold text-cyber-400 flex items-center gap-1.5 uppercase">
+                      <BookOpen className="w-4 h-4" /> ECI JURISPRUDENCE EXPLANATION:
+                    </span>
+                    {currentQ.articleRef && (
+                      <span className="px-2 py-0.5 rounded bg-obsidian-900 border border-white/10 font-mono text-[10px] text-text-muted">
+                        {currentQ.articleRef}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-text-secondary leading-relaxed text-sm">
+                    {currentQ.explanation}
+                  </p>
+
+                  <div className="pt-3 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleNext}
+                      className="btn-primary py-3 px-7 rounded-xl text-xs font-display font-bold flex items-center gap-2 shadow-command-glow"
+                    >
+                      <span>{currentIndex < QUESTIONS.length - 1 ? "NEXT QUESTION" : "GENERATE DIPLOMA"}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
           </div>
         )}
-      </div>
 
-      <div className="mt-12 text-center relative z-10" style={{ color: "var(--color-text-secondary)", fontSize: "0.875rem" }}>
-        Engineered with precision by <span className="font-bold" style={{ color: "var(--color-text-primary)" }}>Abhijeet Kangane</span> 🇮🇳✦
       </div>
     </main>
   );
