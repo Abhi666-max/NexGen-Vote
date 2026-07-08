@@ -53,33 +53,34 @@
 }
 
 /* ========================================================
-   DARK MODE OVERRIDES (Obsidian Cyber Command Console)
+   DARK MODE OVERRIDES (Linear & Vercel SaaS IaaS Grade)
    ======================================================== */
 .dark {
-  --color-primary:        hsl(215, 90%, 58%);
-  --color-primary-light:  hsl(215, 92%, 66%);
-  --color-primary-dark:   hsl(215, 85%, 48%);
-  --color-accent:         hsl(28, 92%, 52%);
-  --color-accent-light:   hsl(28, 95%, 60%);
-  --color-cyber:          #22d3ee;
-  --color-electric:       #a78bfa;
+  --color-primary:        hsl(215, 92%, 60%);
+  --color-primary-light:  hsl(215, 95%, 68%);
+  --color-primary-dark:   hsl(215, 88%, 50%);
+  --color-accent:         hsl(28, 95%, 54%);
+  --color-accent-light:   hsl(28, 98%, 62%);
+  --color-cyber:          #00e5ff;
+  --color-electric:       #8a63f2;
 
-  --color-bg:             #070a13;
-  --color-bg-secondary:   #0a0e1b;
-  --color-bg-tertiary:    #0e1526;
-  --color-surface:        #111827;
-  --color-surface-raised: #182236;
-  --color-border:         rgba(255, 255, 255, 0.12);
-  --color-border-subtle:  rgba(255, 255, 255, 0.07);
+  /* True Carbon & Pitch Obsidian Backgrounds */
+  --color-bg:             #050507;
+  --color-bg-secondary:   #090a0d;
+  --color-bg-tertiary:    #0e1015;
+  --color-surface:        #12141a;
+  --color-surface-raised: #181b23;
+  --color-border:         rgba(255, 255, 255, 0.10);
+  --color-border-subtle:  rgba(255, 255, 255, 0.05);
 
-  --color-text-primary:   hsl(220, 20%, 96%);
-  --color-text-secondary: hsl(220, 14%, 68%);
-  --color-text-muted:     hsl(220, 10%, 48%);
-  --color-text-inverse:   hsl(220, 30%, 10%);
+  --color-text-primary:   #ededeff0;
+  --color-text-secondary: #94969cf0;
+  --color-text-muted:     #5c5f66;
+  --color-text-inverse:   #050507;
 
-  --glass-bg:             rgba(15, 23, 42, 0.75);
-  --glass-border:         rgba(255, 255, 255, 0.1);
-  --glass-shadow:         0 12px 40px 0 rgba(0, 0, 0, 0.55);
+  --glass-bg:             rgba(14, 16, 21, 0.82);
+  --glass-border:         rgba(255, 255, 255, 0.09);
+  --glass-shadow:         0 16px 48px 0 rgba(0, 0, 0, 0.65);
 }
 
 /* ========================================================
