@@ -2,7 +2,7 @@
 
 /**
  * AI Voter Mitra Copilot — NexGen Civic OS
- * Architected by Abhijeet Kangane (35-Year Veteran Level)
+ * Architected by Abhijeet Kangane
  * Enterprise Dual-Pane Conversational Civic Intelligence Command Center
  */
 
@@ -14,8 +14,6 @@ import {
   Sparkles, 
   Copy, 
   Check, 
-  Volume2, 
-  VolumeX, 
   RefreshCw, 
   ShieldCheck, 
   BookOpen, 
@@ -23,8 +21,7 @@ import {
   Terminal, 
   AlertCircle, 
   ExternalLink,
-  ChevronRight,
-  HelpCircle
+  ChevronRight
 } from "lucide-react";
 
 /* ========================================================
@@ -150,7 +147,7 @@ function MessageBubble({ msg, onCopy }: { msg: Message; onCopy: (text: string) =
           {/* Model Footer Actions */}
           {!isUser && (
             <div className="mt-4 pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-text-muted">
-              <div className="flex items-center gap-1.5 text-emerald-400">
+              <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Verified against ECI Guidelines</span>
               </div>
@@ -191,7 +188,7 @@ function TypingIndicator() {
             />
           ))}
         </div>
-        <span className="text-xs font-mono text-text-secondary">Consulting official ECI regulatory database...</span>
+        <span className="text-xs font-mono text-text-secondary">Consulting official ECI regulatory database via Groq Llama 3.3...</span>
       </div>
     </div>
   );
@@ -205,7 +202,7 @@ export default function VoterMitraPage() {
     {
       id: uid(),
       role: "model",
-      text: "Namaste! 🙏 Welcome to the **Voter Mitra AI Civic Intelligence Copilot**.\n\nI am autonomously trained on Election Commission of India (ECI) guidelines, constitutional voting law (Article 326), and EVM/VVPAT hardware specifications.\n\n**Select a query from the left workspace, or type your exact question below:**\n1. How do I register to vote online using Form 6?\n2. Why is the EVM standalone chip immune to hacking?\n3. How can I check my polling booth credentials?",
+      text: "Namaste! 🙏 Welcome to the **Voter Mitra AI Civic Intelligence Copilot**.\n\nI am autonomously powered by high-speed **Groq Llama 3.3 70B** and **Gemini 2.0**, trained on Election Commission of India (ECI) guidelines, constitutional voting law (Article 326), and EVM/VVPAT hardware specifications.\n\n**Select a query from the left workspace, or type your exact question below:**\n1. How do I register to vote online using Form 6?\n2. Why is the EVM standalone chip immune to hacking?\n3. How can I check my polling booth credentials?",
       timestamp: new Date(),
     },
   ]);
@@ -213,14 +210,18 @@ export default function VoterMitraPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>("basics");
-  const [audioReadout, setAudioReadout] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  /* Auto-scroll to bottom */
+  /* Clean Auto-scroll only within chat container without window jumping */
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTo({
+        top: chatScrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages, isLoading]);
 
   /* Send message logic */
@@ -264,14 +265,6 @@ export default function VoterMitraPage() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMsg]);
-
-      /* Optional audio readout simulation */
-      if (audioReadout && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(data.reply.replace(/[*#]/g, ""));
-        utterance.rate = 1.05;
-        window.speechSynthesis.speak(utterance);
-      }
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : "Something went wrong";
       setError(errMsg);
@@ -280,7 +273,7 @@ export default function VoterMitraPage() {
         {
           id: uid(),
           role: "model",
-          text: "⚠️ System Alert: Unable to reach ECI inference endpoint. Please verify your network connection or GEMINI_API_KEY configuration.",
+          text: "⚠️ System Alert: Unable to reach ECI inference endpoint. Please verify your network connection or API configuration.",
           timestamp: new Date(),
         },
       ]);
@@ -288,7 +281,7 @@ export default function VoterMitraPage() {
       setIsLoading(false);
       inputRef.current?.focus();
     }
-  }, [messages, isLoading, audioReadout]);
+  }, [messages, isLoading]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -307,7 +300,6 @@ export default function VoterMitraPage() {
   };
 
   const resetSession = () => {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     setMessages([
       {
         id: uid(),
@@ -348,7 +340,7 @@ export default function VoterMitraPage() {
                   Voter Mitra AI <span className="text-cyber-400 font-mono text-xs">v2.0</span>
                 </h1>
                 <span className="text-xs font-mono text-text-muted flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Autonomous ECI Copilot
                 </span>
               </div>
@@ -412,30 +404,16 @@ export default function VoterMitraPage() {
               </div>
             </div>
 
-            {/* Audio & Reset Controls */}
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
-              <button
-                type="button"
-                onClick={() => setAudioReadout(!audioReadout)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono transition-all border ${
-                  audioReadout
-                    ? "bg-obsidian-950 border-cyber-500/40 text-cyber-400"
-                    : "bg-obsidian-950 border-border text-text-muted"
-                }`}
-                title="Toggle Speech Audio Readout"
-              >
-                {audioReadout ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-                <span>VOICE: {audioReadout ? "ON" : "OFF"}</span>
-              </button>
-
+            {/* Reset Controls */}
+            <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={resetSession}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-obsidian-950 hover:bg-obsidian-900 border border-white/10 text-xs font-mono text-text-secondary hover:text-white transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-obsidian-950 hover:bg-obsidian-900 border border-white/10 text-xs font-mono text-text-secondary hover:text-white transition-all w-full justify-center font-bold"
                 title="Reset Chat Session"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>CLEAR</span>
+                <RefreshCw className="w-3.5 h-3.5 text-cyber-400" />
+                <span>CLEAR & RESET SESSION</span>
               </button>
             </div>
 
@@ -456,12 +434,12 @@ export default function VoterMitraPage() {
                 <Terminal className="w-3.5 h-3.5" />
                 <span>STREAM CONSOLE</span>
               </div>
-              <span className="text-xs font-mono text-text-muted hidden md:inline">
-                ENCRYPTED SSL • GEMINI 1.5 FLASH INFERENCE
+              <span className="text-xs font-mono text-text-muted hidden md:inline font-bold">
+                ENCRYPTED SSL • GROQ LLAMA 3.3 & GEMINI AI ENGINE
               </span>
             </div>
 
-            <div className="flex items-center gap-4 text-xs font-mono text-text-muted">
+            <div className="flex items-center gap-4 text-xs font-mono text-text-muted font-bold">
               <span className="flex items-center gap-1 text-emerald-400">
                 <ShieldCheck className="w-3.5 h-3.5" /> ECI ART. 326 COMPLIANT
               </span>
@@ -469,7 +447,11 @@ export default function VoterMitraPage() {
           </div>
 
           {/* Message Stream Area */}
-          <div className="flex-1 overflow-y-auto p-6 sm:p-8 flex flex-col gap-6" role="list">
+          <div 
+            ref={chatScrollRef}
+            className="flex-1 overflow-y-auto p-6 sm:p-8 flex flex-col gap-6 scroll-smooth" 
+            role="list"
+          >
             {messages.map((m) => (
               <MessageBubble key={m.id} msg={m} onCopy={handleCopy} />
             ))}
@@ -482,8 +464,6 @@ export default function VoterMitraPage() {
                 <span>Error connecting to AI service: {error}</span>
               </div>
             )}
-
-            <div ref={messagesEndRef} />
           </div>
 
           {/* Input Command Dock */}
@@ -514,7 +494,7 @@ export default function VoterMitraPage() {
 
               <div className="flex items-center justify-between text-[11px] font-mono text-text-muted px-2">
                 <span>Press <kbd className="px-1.5 py-0.5 rounded bg-obsidian-900 border border-white/10 text-white font-bold">Enter ↵</kbd> to submit • <kbd className="px-1.5 py-0.5 rounded bg-obsidian-900 border border-white/10 text-white font-bold">Shift + Enter</kbd> for newline</span>
-                <span className="text-cyber-400 hidden sm:inline">24/7 Autonomous ECI Guidance</span>
+                <span className="text-cyber-400 font-bold hidden sm:inline">24/7 Autonomous ECI Guidance</span>
               </div>
             </form>
           </div>
