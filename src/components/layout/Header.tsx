@@ -2,8 +2,7 @@
 
 /**
  * Enterprise Floating Glass Command Navbar — NexGen Civic OS
- * Architected by Abhijeet Kangane (35-Year Veteran Level SaaS / IaaS Precision)
- * Minimalist, high-density, breathable layout modeled after Vercel, Linear, and Stripe.
+ * Minimalist, high-density, breathable layout modeled after modern enterprise web applications.
  */
 
 import Link from "next/link";
@@ -15,12 +14,10 @@ import {
   Vote, 
   MapPin, 
   Award, 
-  Sun, 
-  Moon, 
   Menu, 
   X, 
   ShieldCheck,
-  ArrowRight
+  Cpu
 } from "lucide-react";
 
 /* ========================================================
@@ -88,44 +85,16 @@ function Logo() {
 }
 
 /* ========================================================
-   THEME TOGGLE
-   ======================================================== */
-function ThemeToggle({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onToggle}
-      aria-label={isDark ? "Switch to light theme" : "Switch to dark cyber theme"}
-      aria-pressed={isDark}
-      className="relative flex items-center justify-center w-9 h-9 rounded-xl transition-all duration-200 focus-ring bg-surface/60 dark:bg-obsidian-900/60 border border-border/80 hover:border-cyber-400/50 text-text-secondary hover:text-white shadow-sm"
-    >
-      {isDark ? (
-        <Sun className="w-4 h-4 text-saffron-400 transition-transform duration-300 rotate-0 scale-100" />
-      ) : (
-        <Moon className="w-4 h-4 text-primary-500 transition-transform duration-300 rotate-0 scale-100" />
-      )}
-    </button>
-  );
-}
-
-/* ========================================================
    MAIN HEADER (Floating Vercel/Linear Style Dock)
    ======================================================== */
 export function Header() {
   const pathname = usePathname();
-  const [isDark, setIsDark] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const root = document.documentElement;
-    const initialDark = root.classList.contains("dark") || window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setIsDark(initialDark);
-    if (initialDark) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    /* Enforce Dark Theme Always as requested */
+    document.documentElement.classList.add("dark");
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 16);
@@ -134,29 +103,16 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    const root = document.documentElement;
-    if (nextDark) {
-      root.classList.add("dark");
-      localStorage.setItem("nexgen_theme", "dark");
-    } else {
-      root.classList.remove("dark");
-      localStorage.setItem("nexgen_theme", "light");
-    }
-  };
-
   return (
     <header
-      className="sticky top-4 z-50 w-full px-4 sm:px-6 lg:px-8 transition-all duration-300"
+      className="sticky top-4 z-50 w-full px-4 sm:px-6 lg:px-8 transition-all duration-300 print:hidden"
       role="banner"
     >
       <div
         className={`max-w-6xl mx-auto rounded-2xl transition-all duration-300 border ${
           scrolled
             ? "glass-card border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.65)] py-2.5 px-4 sm:px-6"
-            : "bg-surface/75 dark:bg-obsidian-950/75 backdrop-blur-2xl border-white/[0.08] py-3 px-4 sm:px-6 shadow-xl"
+            : "bg-surface/80 dark:bg-obsidian-950/80 backdrop-blur-2xl border-white/[0.08] py-3 px-4 sm:px-6 shadow-xl"
         }`}
       >
         <div className="flex items-center justify-between gap-4">
@@ -188,18 +144,13 @@ export function Header() {
             })}
           </nav>
 
-          {/* Right Action Bar (Theme Toggle + Quick Assessment Shortcut) */}
-          <div className="flex items-center gap-2.5">
-            <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
-
-            {/* Direct Launch Pill for Desktop */}
-            <Link
-              href="/quiz"
-              className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-primary-500 to-cyber-500 hover:from-primary-600 hover:to-cyber-600 text-white text-xs font-display font-bold shadow-[0_0_20px_-5px_#06b6d4] hover:shadow-[0_0_25px_-3px_#06b6d4] transition-all duration-300"
-            >
-              <span>Get Certified</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+          {/* Right Action Bar (Architect Badge + Mobile Menu) */}
+          <div className="flex items-center gap-3">
+            {/* Founder Credit Displayed directly on UI */}
+            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyber-500/10 border border-cyber-500/30 text-[11px] font-mono text-cyber-400 font-bold tracking-tight shadow-sm">
+              <Cpu className="w-3 h-3 text-cyber-300 animate-pulse" />
+              <span>Architected by <strong className="text-white font-sans font-extrabold tracking-normal">Abhijeet Kangane</strong></span>
+            </div>
 
             {/* Mobile Menu Button */}
             <button
@@ -245,6 +196,11 @@ export function Header() {
                 </Link>
               );
             })}
+
+            {/* Mobile Founder Badge */}
+            <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-center text-center text-xs font-mono text-cyber-400 py-2">
+              <span>Architected by <strong className="text-white font-sans">Abhijeet Kangane</strong></span>
+            </div>
           </nav>
         )}
       </div>
