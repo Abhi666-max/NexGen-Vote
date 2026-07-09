@@ -2,7 +2,7 @@
 
 /**
  * EVM Simulator & Cryptographic Digital Twin — NexGen Civic OS
- * Architected by Abhijeet Kangane (35-Year Veteran Level)
+ * Architected by Abhijeet Kangane
  * Enterprise-Grade Hardware Simulation of CU, BU, VVPAT, & SHA-256 Audit Ledger
  */
 
