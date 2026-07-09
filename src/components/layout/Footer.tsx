@@ -2,19 +2,17 @@
 
 /**
  * Enterprise High-Density Footer — NexGen Civic OS
- * Architected by Founder: Abhijeet Kangane (35-Year Veteran Level SaaS / IaaS Precision)
- * Minimalist, high-contrast, Vercel/Linear style footer with exact founder credit and social links.
+ * Minimalist, high-contrast style footer with exact founder credit and social links.
  */
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { 
   ShieldCheck, 
   Terminal, 
   CheckCircle2, 
   ExternalLink, 
-  Cpu,
-  Lock,
-  Heart
+  Cpu
 } from "lucide-react";
 
 /* ========================================================
@@ -96,13 +94,19 @@ const SOCIAL_LINKS = [
    FOOTER COMPONENT
    ======================================================== */
 export function Footer() {
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+
+  /* Only display large Footer on Landing Home Page ("/") */
+  if (pathname !== "/") {
+    return null;
+  }
 
   return (
     <footer
       role="contentinfo"
       aria-label="NexGen Civic OS Site Footer"
-      className="mt-auto border-t border-white/[0.08] bg-surface dark:bg-obsidian-950 relative overflow-hidden transition-colors duration-300"
+      className="mt-auto border-t border-white/[0.08] bg-surface dark:bg-obsidian-950 relative overflow-hidden transition-colors duration-300 print:hidden"
     >
       {/* Subtle Top Accent Glow Line */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" aria-hidden="true" />
@@ -140,7 +144,7 @@ export function Footer() {
                 <div className="flex items-center justify-between text-[11px] font-mono text-cyber-400 uppercase tracking-wider">
                   <span>FOUNDER & ARCHITECT</span>
                   <span className="px-2 py-0.5 rounded bg-cyber-500/10 border border-cyber-500/20 text-[10px] font-bold">
-                    35-YR LEVEL IAAS
+                    PROMPTWARS 2026
                   </span>
                 </div>
                 <div className="font-display font-black text-base text-white flex items-center gap-2">
