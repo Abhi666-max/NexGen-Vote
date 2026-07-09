@@ -2,7 +2,7 @@
 
 /**
  * Enterprise Floating Glass Command Navbar — NexGen Civic OS
- * Minimalist, high-density, breathable layout modeled after modern enterprise web applications.
+ * Sleek, high-density, centered floating dock with zero visual clutter.
  */
 
 import Link from "next/link";
@@ -16,8 +16,7 @@ import {
   Award, 
   Menu, 
   X, 
-  ShieldCheck,
-  Cpu
+  ShieldCheck
 } from "lucide-react";
 
 /* ========================================================
@@ -93,7 +92,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    /* Enforce Dark Theme Always as requested */
+    /* Enforce Dark Theme Always */
     document.documentElement.classList.add("dark");
 
     const handleScroll = () => {
@@ -109,18 +108,18 @@ export function Header() {
       role="banner"
     >
       <div
-        className={`max-w-6xl mx-auto rounded-2xl transition-all duration-300 border ${
+        className={`max-w-5xl mx-auto rounded-2xl transition-all duration-300 border ${
           scrolled
-            ? "glass-card border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.65)] py-2.5 px-4 sm:px-6"
-            : "bg-surface/80 dark:bg-obsidian-950/80 backdrop-blur-2xl border-white/[0.08] py-3 px-4 sm:px-6 shadow-xl"
+            ? "glass-card border-white/15 shadow-[0_12px_40px_rgba(0,0,0,0.8)] py-2.5 px-5"
+            : "bg-obsidian-950/85 backdrop-blur-2xl border-white/10 py-3 px-5 shadow-2xl"
         }`}
       >
         <div className="flex items-center justify-between gap-4">
           {/* Brand Logo */}
           <Logo />
 
-          {/* Clean SaaS Desktop Navigation */}
-          <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1 bg-obsidian-900/40 dark:bg-obsidian-900/60 p-1 rounded-xl border border-white/[0.06]">
+          {/* Clean SaaS Desktop Navigation Capsule */}
+          <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-1.5 bg-obsidian-900/70 p-1.5 rounded-2xl border border-white/10 shadow-inner backdrop-blur-md">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
@@ -131,10 +130,10 @@ export function Header() {
                   href={item.href}
                   aria-label={item.ariaLabel}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 focus-ring ${
+                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200 focus-ring ${
                     isActive
-                      ? "bg-gradient-to-r from-primary-600 to-cyber-600 text-white shadow-[0_2px_12px_rgba(6,182,212,0.35)]"
-                      : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
+                      ? "bg-gradient-to-r from-primary-600 via-cyber-600 to-electric-600 text-white shadow-[0_2px_12px_rgba(6,182,212,0.4)] scale-[1.02]"
+                      : "text-text-secondary hover:text-white hover:bg-white/[0.06]"
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-text-muted"}`} />
@@ -144,23 +143,16 @@ export function Header() {
             })}
           </nav>
 
-          {/* Right Action Bar (Architect Badge + Mobile Menu) */}
-          <div className="flex items-center gap-3">
-            {/* Founder Credit Displayed directly on UI */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyber-500/10 border border-cyber-500/30 text-[11px] font-mono text-cyber-400 font-bold tracking-tight shadow-sm">
-              <Cpu className="w-3 h-3 text-cyber-300 animate-pulse" />
-              <span>Architected by <strong className="text-white font-sans font-extrabold tracking-normal">Abhijeet Kangane</strong></span>
-            </div>
-
-            {/* Mobile Menu Button */}
+          {/* Right Mobile Menu Button */}
+          <div className="flex items-center">
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open navigation menu"}
               aria-expanded={isMobileMenuOpen}
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl bg-surface/60 dark:bg-obsidian-900/60 border border-border text-text-secondary hover:text-white focus-ring transition-all"
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-obsidian-900 border border-white/10 text-text-secondary hover:text-white focus-ring transition-all"
             >
-              {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -169,7 +161,7 @@ export function Header() {
         {isMobileMenuOpen && (
           <nav
             aria-label="Mobile Navigation"
-            className="md:hidden mt-4 pt-4 border-t border-white/[0.08] flex flex-col gap-1.5 animate-slide-down"
+            className="md:hidden mt-4 pt-4 border-t border-white/10 flex flex-col gap-2 animate-slide-down"
           >
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
@@ -185,22 +177,17 @@ export function Header() {
                   className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                     isActive
                       ? "bg-gradient-to-r from-primary-600 to-cyber-600 text-white font-bold shadow-md"
-                      : "text-text-secondary hover:text-white hover:bg-white/[0.04]"
+                      : "text-text-secondary hover:text-white hover:bg-white/[0.06]"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon className="w-4 h-4" />
                     <span>{item.label}</span>
                   </div>
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-cyber-300 animate-pulse" />}
+                  {isActive && <span className="w-2 h-2 rounded-full bg-cyber-300 animate-pulse" />}
                 </Link>
               );
             })}
-
-            {/* Mobile Founder Badge */}
-            <div className="mt-2 pt-2 border-t border-white/10 flex items-center justify-center text-center text-xs font-mono text-cyber-400 py-2">
-              <span>Architected by <strong className="text-white font-sans">Abhijeet Kangane</strong></span>
-            </div>
           </nav>
         )}
       </div>
