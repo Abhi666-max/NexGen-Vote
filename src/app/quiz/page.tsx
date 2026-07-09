@@ -2,7 +2,7 @@
 
 /**
  * Civic Assessment & Credentialing Portal — NexGen Civic OS
- * Architected by Abhijeet Kangane (35-Year Veteran Level)
+ * Architected by Abhijeet Kangane
  * Gamified Domain Assessment with Streak Multipliers & Printable "Certified Democracy Pro" Diploma
  */
 
@@ -194,7 +194,7 @@ function DemocracyProCertificate({
     <div className="w-full flex flex-col items-center animate-slide-up">
       
       {/* Action Toolbar above Certificate */}
-      <div className="w-full max-w-4xl flex flex-wrap items-center justify-between gap-4 mb-6 px-2">
+      <div className="w-full max-w-4xl flex flex-wrap items-center justify-between gap-4 mb-6 px-2 print:hidden">
         <div className="flex items-center gap-2 text-xs font-mono text-emerald-400">
           <CheckCircle2 className="w-4 h-4" />
           <span>ASSESSMENT COMPLETE • DIPLOMA GENERATED</span>
@@ -378,7 +378,7 @@ export default function QuizPage() {
       <div className="max-w-7xl mx-auto flex flex-col items-center gap-8">
         
         {/* Top Header */}
-        <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-border/80">
+        <div className="w-full flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-border/80 print:hidden">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-saffron-500/10 border border-saffron-500/30 text-xs font-mono text-saffron-300 mb-2">
               <Award className="w-3.5 h-3.5" />
