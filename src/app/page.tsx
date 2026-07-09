@@ -2,7 +2,7 @@
 
 /**
  * NexGen Civic OS — Enterprise Command Console & Homepage
- * Architected by Abhijeet Kangane (35-Year Veteran Level)
+ * Architected by Abhijeet Kangane
  */
 
 import Link from "next/link";
@@ -47,10 +47,9 @@ const FEATURES = [
     href: "/voter-mitra",
     cta: "Launch Copilot",
     icon: Bot,
-    badge: "Gemini AI 2.0",
+    badge: "Llama 3.3 70B AI",
     badgeColor: "border-electric-500/40 text-electric-300 bg-electric-500/10",
     gradient: "from-electric-600 to-indigo-600",
-    // Interactive Mini-Preview component prop rendered inside
     previewType: "chat",
   },
   {
@@ -128,8 +127,8 @@ function MiniChatPreview() {
   return (
     <div className="rounded-xl bg-obsidian-950/80 border border-white/10 p-3 text-xs font-mono flex flex-col gap-2 my-3 shadow-inner">
       <div className="flex items-center justify-between text-[10px] text-text-muted border-b border-white/5 pb-1.5">
-        <span className="flex items-center gap-1.5 text-electric-400"><Bot className="w-3 h-3" /> VOTER MITRA AI v2.0</span>
-        <span className="text-emerald-400">● STREAMING</span>
+        <span className="flex items-center gap-1.5 text-electric-400"><Bot className="w-3 h-3 animate-bounce" /> VOTER MITRA AI v2.0</span>
+        <span className="text-emerald-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> STREAMING</span>
       </div>
       <div className="text-text-secondary leading-snug">
         <span className="text-cyber-400 font-bold">Query:</span> How does VVPAT guarantee zero hacking?
@@ -145,8 +144,8 @@ function MiniEVMPreview() {
   return (
     <div className="rounded-xl bg-obsidian-950/80 border border-white/10 p-3 text-xs font-mono flex flex-col gap-2 my-3 shadow-inner">
       <div className="flex items-center justify-between text-[10px] text-text-muted border-b border-white/5 pb-1.5">
-        <span className="flex items-center gap-1.5 text-cyber-400"><Vote className="w-3 h-3" /> EVM HARDWARE TWIN</span>
-        <span className="text-emerald-400">● BALLOT READY</span>
+        <span className="flex items-center gap-1.5 text-cyber-400"><Vote className="w-3 h-3 animate-pulse" /> EVM HARDWARE TWIN</span>
+        <span className="text-emerald-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" /> BALLOT READY</span>
       </div>
       <div className="flex items-center justify-between gap-2 p-2 rounded bg-obsidian-900 border border-white/5">
         <div className="flex items-center gap-2">
@@ -168,8 +167,8 @@ function MiniMapPreview() {
   return (
     <div className="rounded-xl bg-obsidian-950/80 border border-white/10 p-3 text-xs font-mono flex flex-col gap-2 my-3 shadow-inner relative overflow-hidden">
       <div className="flex items-center justify-between text-[10px] text-text-muted border-b border-white/5 pb-1.5">
-        <span className="flex items-center gap-1.5 text-emerald-400"><MapPin className="w-3 h-3" /> GIS RADAR CONSOLE</span>
-        <span className="text-cyber-400">● WARD 04 ACTIVE</span>
+        <span className="flex items-center gap-1.5 text-emerald-400"><MapPin className="w-3 h-3 animate-pulse" /> GIS RADAR CONSOLE</span>
+        <span className="text-cyber-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-cyber-400 animate-pulse" /> WARD 04 ACTIVE</span>
       </div>
       <div className="h-16 rounded bg-obsidian-900 border border-emerald-500/20 relative flex items-center justify-center overflow-hidden">
         {/* Radar scan ring */}
@@ -191,8 +190,8 @@ function MiniBadgePreview() {
   return (
     <div className="rounded-xl bg-obsidian-950/80 border border-white/10 p-3 text-xs font-mono flex flex-col gap-2 my-3 shadow-inner">
       <div className="flex items-center justify-between text-[10px] text-text-muted border-b border-white/5 pb-1.5">
-        <span className="flex items-center gap-1.5 text-saffron-400"><Award className="w-3 h-3" /> CREDENTIAL ENGINE</span>
-        <span className="text-saffron-400">● VERIFIABLE ID</span>
+        <span className="flex items-center gap-1.5 text-saffron-400"><Award className="w-3 h-3 animate-spin" style={{ animationDuration: "6s" }} /> CREDENTIAL ENGINE</span>
+        <span className="text-saffron-400 flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-saffron-400 animate-pulse" /> VERIFIABLE ID</span>
       </div>
       <div className="flex items-center gap-3 p-2 rounded bg-gradient-to-r from-saffron-500/10 to-transparent border border-saffron-500/20">
         <div className="w-8 h-8 rounded-lg bg-saffron-500/20 border border-saffron-500/40 flex items-center justify-center text-saffron-400 font-bold">
@@ -243,7 +242,7 @@ export default function HomePage() {
           {/* High-Impact Hero Headline */}
           <h1 
             id="hero-heading" 
-            className="font-display font-black tracking-tight max-w-5xl mx-auto mb-6 text-4xl sm:text-6xl lg:text-7xl leading-[1.08] text-obsidian-950 dark:text-white"
+            className="font-display font-black tracking-tight max-w-5xl mx-auto mb-6 text-4xl sm:text-6xl lg:text-7xl leading-[1.08] text-white"
           >
             Democracy, Engineered For <br className="hidden sm:inline" />
             <span className="gradient-text">Absolute Transparency.</span>
@@ -281,12 +280,12 @@ export default function HomePage() {
               return (
                 <div
                   key={s.label}
-                  className="glass-card rounded-2xl p-5 border border-border/80 flex flex-col items-center justify-center relative overflow-hidden group hover:border-cyber-500/40 transition-all duration-300"
+                  className="glass-card rounded-2xl p-5 border border-border/80 flex flex-col items-center justify-center relative overflow-hidden group hover:border-cyber-500/40 hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyber-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="flex items-center gap-2 mb-2">
                     <Icon className={`w-4 h-4 ${s.color}`} />
-                    <span className="font-display font-black text-2xl sm:text-3xl text-obsidian-950 dark:text-white tracking-tight">
+                    <span className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight">
                       {s.value}
                     </span>
                   </div>
@@ -315,7 +314,7 @@ export default function HomePage() {
               <Sparkles className="w-3.5 h-3.5" />
               <span>CORE CIVIC OS MODULES</span>
             </div>
-            <h2 id="features-heading" className="font-display font-black text-3xl sm:text-5xl text-obsidian-950 dark:text-white mb-4 tracking-tight">
+            <h2 id="features-heading" className="font-display font-black text-3xl sm:text-5xl text-white mb-4 tracking-tight">
               Enterprise-Grade Civic Infrastructure.
             </h2>
             <p className="text-base sm:text-lg text-text-secondary">
@@ -323,19 +322,23 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Feature Grid */}
+          {/* Feature Grid with Continuous Ambient Animation */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURES.map((f) => {
+            {FEATURES.map((f, i) => {
               const Icon = f.icon;
               return (
                 <article
                   key={f.id}
-                  className="glass-card rounded-2xl p-6 border border-border/80 flex flex-col justify-between relative overflow-hidden group hover:border-cyber-500/50 hover:shadow-glass-elevated transition-all duration-300"
+                  className="glass-card rounded-2xl p-6 border border-white/10 flex flex-col justify-between relative overflow-hidden group hover:border-cyber-500/60 hover:shadow-glass-elevated hover:-translate-y-1.5 transition-all duration-300"
                 >
+                  {/* Continuous ambient edge glow inside card */}
+                  <div className="absolute -top-12 -right-12 w-24 h-24 bg-gradient-to-br from-cyber-500/15 via-electric-500/10 to-transparent rounded-full blur-xl pointer-events-none animate-pulse" />
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyber-400/30 to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+
                   <div>
                     {/* Top Header */}
-                    <div className="flex items-center justify-between gap-2 mb-4">
-                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform`}>
+                    <div className="flex items-center justify-between gap-2 mb-4 relative z-10">
+                      <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-300`}>
                         <Icon className="w-5 h-5" />
                       </div>
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold border ${f.badgeColor}`}>
@@ -344,31 +347,33 @@ export default function HomePage() {
                     </div>
 
                     {/* Titles */}
-                    <h3 className="font-display font-bold text-lg text-obsidian-950 dark:text-white mb-1 group-hover:text-cyber-400 transition-colors">
+                    <h3 className="font-display font-bold text-lg text-white mb-1 group-hover:text-cyber-400 transition-colors relative z-10">
                       {f.title}
                     </h3>
-                    <div className="text-xs font-mono text-cyber-400/90 font-semibold mb-3">
+                    <div className="text-xs font-mono text-cyber-400/90 font-semibold mb-3 relative z-10">
                       {f.subtitle}
                     </div>
-                    <p className="text-xs text-text-secondary leading-relaxed mb-3">
+                    <p className="text-xs text-text-secondary leading-relaxed mb-3 relative z-10">
                       {f.desc}
                     </p>
 
                     {/* Interactive Mini Preview */}
-                    {f.previewType === "chat" && <MiniChatPreview />}
-                    {f.previewType === "evm" && <MiniEVMPreview />}
-                    {f.previewType === "map" && <MiniMapPreview />}
-                    {f.previewType === "badge" && <MiniBadgePreview />}
+                    <div className="relative z-10">
+                      {f.previewType === "chat" && <MiniChatPreview />}
+                      {f.previewType === "evm" && <MiniEVMPreview />}
+                      {f.previewType === "map" && <MiniMapPreview />}
+                      {f.previewType === "badge" && <MiniBadgePreview />}
+                    </div>
                   </div>
 
                   {/* Footer CTA */}
-                  <div className="pt-4 border-t border-white/5 mt-auto">
+                  <div className="pt-4 border-t border-white/5 mt-auto relative z-10">
                     <Link
                       href={f.href}
-                      className="inline-flex items-center justify-between w-full text-xs font-bold font-display text-obsidian-950 dark:text-white group-hover:text-cyber-400 transition-colors"
+                      className="inline-flex items-center justify-between w-full text-xs font-bold font-display text-white group-hover:text-cyber-400 transition-colors"
                     >
                       <span>{f.cta}</span>
-                      <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform" />
                     </Link>
                   </div>
                 </article>
@@ -393,7 +398,7 @@ export default function HomePage() {
               <Database className="w-3.5 h-3.5" />
               <span>SYSTEM ARCHITECTURE PROTOCOL</span>
             </div>
-            <h2 id="architecture-heading" className="font-display font-black text-3xl sm:text-5xl text-obsidian-950 dark:text-white mb-4 tracking-tight">
+            <h2 id="architecture-heading" className="font-display font-black text-3xl sm:text-5xl text-white mb-4 tracking-tight">
               3-Step Civic Empowerment Pipeline.
             </h2>
             <p className="text-base sm:text-lg text-text-secondary">
@@ -401,34 +406,38 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* 3-Step Grid */}
+          {/* 3-Step Grid with Continuous Floating / Pulse */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
             {ARCHITECTURE_STEPS.map((step, idx) => {
               const Icon = step.icon;
               return (
                 <div
                   key={step.step}
-                  className="glass-card rounded-2xl p-7 border border-border/80 relative overflow-hidden group hover:border-cyber-500/40 transition-all duration-300 flex flex-col justify-between"
+                  className="glass-card rounded-2xl p-7 border border-white/10 relative overflow-hidden group hover:border-cyber-500/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between mb-6">
-                    <span className={`px-3 py-1 rounded-lg text-xs font-mono font-extrabold border ${step.color}`}>
-                      STEP {step.step}
-                    </span>
-                    <div className="w-10 h-10 rounded-xl bg-obsidian-900 border border-white/10 flex items-center justify-center text-cyber-400 shadow-inner">
-                      <Icon className="w-5 h-5" />
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-cyber-500/5 rounded-full blur-2xl pointer-events-none animate-pulse" />
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-6 relative z-10">
+                      <span className={`px-3 py-1 rounded-lg text-xs font-mono font-extrabold border ${step.color}`}>
+                        STEP {step.step}
+                      </span>
+                      <div className="w-10 h-10 rounded-xl bg-obsidian-900 border border-white/10 flex items-center justify-center text-cyber-400 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <Icon className="w-5 h-5" />
+                      </div>
                     </div>
+
+                    <h3 className="font-display font-bold text-xl text-white mb-3 relative z-10">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-text-secondary leading-relaxed mb-6 relative z-10">
+                      {step.desc}
+                    </p>
                   </div>
 
-                  <h3 className="font-display font-bold text-xl text-obsidian-950 dark:text-white mb-3">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-text-secondary leading-relaxed mb-6">
-                    {step.desc}
-                  </p>
-
-                  <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-text-muted">
+                  <div className="pt-4 border-t border-white/5 flex items-center justify-between text-xs font-mono text-text-muted relative z-10">
                     <span>PROTOCOL STATUS</span>
-                    <span className="text-emerald-400 flex items-center gap-1">
+                    <span className="text-emerald-400 flex items-center gap-1 font-bold">
                       <CheckCircle2 className="w-3.5 h-3.5" /> VERIFIED
                     </span>
                   </div>
