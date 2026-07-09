@@ -268,3 +268,56 @@ body {
   background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
 }
+
+/* Animation Delays for Continuous Motion Background */
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* ========================================================
+   STRICT PRINT ISOLATION RULES (Only print slip/diploma)
+   ======================================================== */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: auto;
+  }
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+  body * {
+    visibility: hidden !important;
+  }
+  header, footer, nav, .skip-to-main, .print\:hidden, [role="banner"], [role="contentinfo"] {
+    display: none !important;
+  }
+  #printable-certificate, #printable-certificate *,
+  #printable-direction-slip, #printable-direction-slip * {
+    visibility: visible !important;
+  }
+  #printable-certificate, #printable-direction-slip {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 24px !important;
+    background: #ffffff !important;
+    border: 3px solid #1e293b !important;
+    box-shadow: none !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #printable-certificate h2, #printable-certificate p, #printable-certificate span,
+  #printable-direction-slip h2, #printable-direction-slip p, #printable-direction-slip span {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+}
