@@ -27,6 +27,7 @@ import {
   Info,
   Globe
 } from "lucide-react";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
 
 /* ========================================================
    POLLING BOOTH DATA MATRIX
@@ -543,7 +544,7 @@ export default function BoothLocatorPage() {
           {/* Right Column: Detailed Polling Operations Drawer (Spans 5 columns) */}
           <section aria-labelledby="booth-drawer-heading" className="lg:col-span-5 flex flex-col gap-6">
             {selectedBooth ? (
-              <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 bg-surface dark:bg-obsidian-900/90 shadow-glass-elevated flex flex-col gap-6 sticky top-24 animate-slide-up">
+              <AnimatedCard delay={0.2} className="p-6 sm:p-8 flex flex-col gap-6 sticky top-24 animate-border-continuous">
                 
                 {/* Drawer Header */}
                 <div className="flex items-start justify-between pb-4 border-b border-white/10">
@@ -567,22 +568,12 @@ export default function BoothLocatorPage() {
                     <span className="text-white text-right max-w-[220px] truncate font-sans">{selectedBooth.address}</span>
                   </div>
                   <div className="flex items-center justify-between text-text-secondary pt-2 border-t border-white/5">
-                    <span>COORDINATES:</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-cyber-400 font-bold">{selectedBooth.coordinates.lat}, {selectedBooth.coordinates.lng}</span>
-                      <button
-                        type="button"
-                        onClick={() => copyCoordinates(selectedBooth)}
-                        title="Copy Coordinates"
-                        className="p-1 rounded hover:bg-obsidian-800 text-text-muted hover:text-white transition-colors"
-                      >
-                        <Copy className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                    <span>GPS TELEMETRY:</span>
+                    <span className="text-cyber-400 font-bold">{selectedBooth.coordinates.lat}, {selectedBooth.coordinates.lng}</span>
                   </div>
                   <div className="flex items-center justify-between text-text-secondary pt-2 border-t border-white/5">
                     <span>POLLING HOURS:</span>
-                    <span className="text-emerald-400 font-bold">{selectedBooth.hours}</span>
+                    <span className="text-white">{selectedBooth.hours}</span>
                   </div>
                 </div>
 
@@ -594,11 +585,11 @@ export default function BoothLocatorPage() {
                     </span>
                     <span className="font-bold text-white">~{selectedBooth.currentQueueMins} MINUTES</span>
                   </div>
-                  <div className="w-full h-2 bg-obsidian-950 rounded-full overflow-hidden p-0.5">
+                  <div className="w-full h-2 bg-obsidian-950 rounded-full overflow-hidden p-0.5 border border-white/10">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        selectedBooth.status === "OPTIMAL" ? "bg-emerald-500" :
-                        selectedBooth.status === "MODERATE" ? "bg-amber-500" :
+                        selectedBooth.currentQueueMins <= 15 ? "bg-emerald-500" :
+                        selectedBooth.currentQueueMins <= 30 ? "bg-amber-500" :
                         "bg-red-500"
                       }`}
                       style={{ width: `${Math.min(100, (selectedBooth.currentQueueMins / 45) * 100)}%` }}
@@ -669,12 +660,12 @@ export default function BoothLocatorPage() {
                   </button>
                 </div>
 
-              </div>
+              </AnimatedCard>
             ) : (
-              <div className="glass-card rounded-3xl p-10 text-center border border-white/10 text-text-secondary flex flex-col items-center justify-center gap-3">
+              <AnimatedCard delay={0.2} className="p-10 text-center flex flex-col items-center justify-center gap-3 animate-border-continuous">
                 <MapPin className="w-10 h-10 text-cyber-400 opacity-50" />
-                <p className="text-sm">Click any polling station pin on the vector map or directory list to view full ECI operational telemetry and directions.</p>
-              </div>
+                <p className="text-sm text-text-secondary">Click any polling station pin on the vector map or directory list to view full ECI operational telemetry and directions.</p>
+              </AnimatedCard>
             )}
           </section>
 

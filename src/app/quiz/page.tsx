@@ -26,6 +26,7 @@ import {
   UserCheck, 
   ArrowRight
 } from "lucide-react";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
 
 /* ========================================================
    CIVIC ASSESSMENT DOMAIN MATRIX
@@ -222,9 +223,9 @@ function DemocracyProCertificate({
       </div>
 
       {/* The Printable Certificate Container (Gold & Obsidian Diploma) */}
-      <div
+      <AnimatedCard
         id="printable-certificate"
-        className="w-full max-w-4xl rounded-3xl p-8 sm:p-12 border-4 border-amber-500/60 bg-gradient-to-br from-obsidian-950 via-obsidian-900 to-obsidian-950 relative overflow-hidden shadow-2xl text-center"
+        className="w-full max-w-4xl p-8 sm:p-12 border-4 border-amber-500/60 bg-gradient-to-br from-obsidian-950 via-obsidian-900 to-obsidian-950 relative overflow-hidden shadow-2xl text-center animate-border-continuous"
         style={{ minHeight: "520px" }}
       >
         {/* Subtle Ornamental Border & Mesh */}
@@ -307,7 +308,7 @@ function DemocracyProCertificate({
           </div>
         </div>
 
-      </div>
+      </AnimatedCard>
     </div>
   );
 }
@@ -451,7 +452,7 @@ export default function QuizPage() {
             </div>
 
             {/* Question Card */}
-            <div className="glass-card rounded-3xl p-6 sm:p-10 border border-white/15 bg-surface dark:bg-obsidian-900/90 shadow-glass-elevated flex flex-col gap-6 relative overflow-hidden">
+            <AnimatedCard delay={0.1} className="p-6 sm:p-10 flex flex-col gap-6 relative overflow-hidden animate-border-continuous">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyber-500 to-transparent" />
 
               <h2 className="font-display font-black text-xl sm:text-2xl text-obsidian-950 dark:text-white leading-snug">
@@ -536,7 +537,7 @@ export default function QuizPage() {
                 </div>
               )}
 
-            </div>
+            </AnimatedCard>
 
           </div>
         )}

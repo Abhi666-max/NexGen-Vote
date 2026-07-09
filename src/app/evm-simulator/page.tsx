@@ -25,6 +25,7 @@ import {
   Eye,
   FileCheck
 } from "lucide-react";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
 
 /* ========================================================
    CANDIDATE HARDWARE MATRIX
@@ -379,7 +380,7 @@ export default function EVMSimulatorPage() {
                 CONTROL UNIT (CU) — SPANS 5 COLUMNS
                 =================================================== */}
             <section aria-labelledby="cu-panel-title" className="lg:col-span-5 flex flex-col gap-6" ref={cuRef}>
-              <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 shadow-glass-elevated bg-surface dark:bg-obsidian-900/90 relative overflow-hidden">
+              <AnimatedCard delay={0.1} className="p-6 sm:p-8 relative overflow-hidden animate-border-continuous">
                 
                 {/* CU Top Badge */}
                 <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
@@ -443,19 +444,40 @@ export default function EVMSimulatorPage() {
                   <HardwareLED on={phase === "voted"} color="red" label="CLOSE / LOCK" />
                 </div>
 
-                {/* Presiding Officer Toggle Switch */}
-                <div className="flex flex-col gap-3">
-                  <span className="text-xs font-mono font-bold text-text-secondary uppercase tracking-wider">
-                    PRESIDING OFFICER ACTION:
+                {/* Status Indicator LED Screen */}
+                <div className="p-4 rounded-2xl bg-obsidian-950 border border-white/15 shadow-inner mb-6 flex flex-col gap-3">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-text-muted">INTERLOCK STATUS:</span>
+                    <span className={`px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1.5 ${
+                      phase === "ready" 
+                        ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40" 
+                        : "bg-saffron-500/20 text-saffron-400 border border-saffron-500/40"
+                    }`}>
+                      <span className={`w-2 h-2 rounded-full ${phase === "ready" ? "bg-emerald-400 animate-pulse" : "bg-saffron-400"}`} />
+                      {phase === "ready" ? "BALLOT ENABLED" : "STANDBY / LOCKED"}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-mono border-t border-white/5 pt-2.5">
+                    <span className="text-text-muted">TOTAL BALLOTS RECORDED:</span>
+                    <span className="text-white font-bold text-sm tracking-wider">
+                      {totalVotes.toString().padStart(4, "0")}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Presiding Officer Action Button */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-xs font-mono text-text-secondary uppercase tracking-wider font-semibold">
+                    PRESIDING OFFICER CONTROLS:
                   </span>
-                  
                   <button
                     type="button"
                     onClick={enableBallot}
                     disabled={phase === "ready"}
-                    className={`w-full py-4 px-6 rounded-2xl font-display font-extrabold text-base transition-all duration-200 flex items-center justify-center gap-3 focus-ring ${
-                      phase === "idle" || phase === "voted"
-                        ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-command-glow hover:brightness-110 cursor-pointer transform hover:-translate-y-0.5"
+                    className={`w-full py-4 px-6 rounded-2xl font-display font-extrabold text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 ${
+                      phase !== "ready"
+                        ? "bg-gradient-to-r from-emerald-600 to-cyber-600 hover:from-emerald-500 hover:to-cyber-500 text-white shadow-command-glow hover:scale-[1.02]"
                         : "bg-obsidian-950 border border-white/10 text-text-muted cursor-not-allowed opacity-60"
                     }`}
                   >
@@ -467,10 +489,10 @@ export default function EVMSimulatorPage() {
                     Pressing this mechanical button releases the interlock on the Ballot Unit for exactly one vote.
                   </p>
                 </div>
-              </div>
+              </AnimatedCard>
 
               {/* VVPAT Printer Status Card */}
-              <div className="glass-card rounded-2xl p-5 border border-white/10 bg-surface dark:bg-obsidian-900/70 flex items-center justify-between">
+              <AnimatedCard delay={0.15} className="p-5 flex items-center justify-between animate-border-continuous">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                     <FileCheck className="w-5 h-5" />
@@ -493,14 +515,14 @@ export default function EVMSimulatorPage() {
                     RE-INSPECT SLIP
                   </button>
                 )}
-              </div>
+              </AnimatedCard>
             </section>
 
             {/* ===================================================
                 BALLOT UNIT (BU) — SPANS 7 COLUMNS
                 =================================================== */}
             <section aria-labelledby="bu-panel-title" className="lg:col-span-7 flex flex-col gap-6">
-              <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 shadow-glass-elevated bg-surface dark:bg-obsidian-900/90 relative overflow-hidden">
+              <AnimatedCard delay={0.2} className="p-6 sm:p-8 animate-border-continuous">
                 
                 {/* BU Top Header */}
                 <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
@@ -515,73 +537,69 @@ export default function EVMSimulatorPage() {
                   </div>
                   <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-extrabold ${
                     phase === "ready" 
-                      ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" 
-                      : "bg-red-500/20 text-red-300 border border-red-500/40"
+                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40" 
+                      : "bg-red-500/20 text-red-400 border border-red-500/40"
                   }`}>
-                    {phase === "ready" ? "🟢 UNLOCKED - READY TO VOTE" : "🔒 LOCKED BY CONTROL UNIT"}
+                    {phase === "ready" ? "● BALLOT ACTIVE — CAST VOTE NOW" : "● LOCKED — WAIT FOR CU ENABLE"}
                   </span>
                 </div>
 
-                {/* Candidate Rows Matrix */}
-                <div className="flex flex-col gap-3" role="list" aria-label="EVM Candidate Ballot Unit Rows">
-                  {CANDIDATES.map((c) => {
-                    const isSelected = selected === c.id;
+                {/* Candidate Selection Buttons */}
+                <div className="flex flex-col gap-3">
+                  {CANDIDATES.map((c, index) => {
+                    const isVotedThis = selected === c.id && phase === "voted";
                     return (
                       <div
                         key={c.id}
-                        role="listitem"
-                        className={`p-4 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden ${
-                          isSelected
-                            ? "bg-gradient-to-r from-primary-900/40 via-obsidian-900 to-obsidian-950 border-cyber-500 shadow-command-glow"
-                            : "bg-obsidian-950/80 border-white/10 hover:border-white/20"
+                        className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                          isVotedThis
+                            ? "bg-emerald-500/15 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] scale-[1.01]"
+                            : "bg-obsidian-950/80 border-white/10 hover:border-white/25"
                         }`}
                       >
-                        {/* Left Side: Serial + Symbol + Candidate Name */}
-                        <div className="flex items-center gap-4">
-                          <span className="font-mono text-sm font-extrabold text-text-muted px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/5">
-                            {c.serial}
+                        <div className="flex items-center gap-3.5">
+                          <span className="w-8 h-8 rounded-xl bg-obsidian-900 border border-white/10 flex items-center justify-center font-mono font-bold text-xs text-text-secondary">
+                            {index + 1}
                           </span>
-                          <span className="text-3xl flex-shrink-0">{c.symbol}</span>
+                          <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${c.color} flex items-center justify-center text-xl shadow-md`}>
+                            {c.symbol}
+                          </div>
                           <div>
-                            <div className="font-display font-bold text-base text-white">
-                              {c.name}
+                            <div className="font-display font-extrabold text-base text-white flex items-center gap-2">
+                              <span>{c.name}</span>
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-cyber-400 border border-white/10">
+                                {c.party}
+                              </span>
                             </div>
-                            <div className="text-xs font-mono text-cyber-400">
-                              {c.party}
+                            <div className="text-xs font-mono text-text-muted mt-0.5">
+                              Symbol: {c.symbol}
                             </div>
                           </div>
                         </div>
 
-                        {/* Right Side: Red Lamp + Tactile Blue Button */}
-                        <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-white/5">
-                          
-                          {/* Red Confirmation Lamp right next to button */}
-                          <div className="flex items-center gap-1.5" title="Ballot Confirmation Lamp">
-                            <div
-                              className="w-4 h-4 rounded-full border border-white/30 transition-all duration-150"
-                              style={{
-                                background: isSelected ? "#ef4444" : "#2d1212",
-                                boxShadow: isSelected ? "0 0 16px #ef4444, 0 0 30px #ef4444" : "none",
-                              }}
-                            />
-                            <span className="text-[9px] font-mono text-text-muted sm:hidden">LAMP</span>
+                        <div className="flex items-center gap-3 self-end sm:self-center">
+                          {/* LED indicator */}
+                          <div className={`w-4 h-4 rounded-full border transition-all flex items-center justify-center ${
+                            isVotedThis 
+                              ? "bg-red-500 border-red-300 shadow-[0_0_12px_#ef4444]" 
+                              : "bg-obsidian-900 border-white/20"
+                          }`}>
+                            {isVotedThis && <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />}
                           </div>
 
-                          {/* Authentic Tactile Blue Button (Blue Button) */}
+                          {/* Mechanical Blue Vote Button */}
                           <button
                             type="button"
                             onClick={() => castVote(c.id)}
                             disabled={phase !== "ready"}
-                            aria-label={`Cast vote for ${c.name}`}
-                            className={`px-6 py-3 rounded-xl font-display font-black text-xs tracking-wider uppercase transition-all duration-150 flex items-center gap-2 focus-ring ${
+                            className={`py-3 px-6 rounded-xl font-display font-black text-xs tracking-wider uppercase transition-all flex items-center gap-2 ${
                               phase === "ready"
-                                ? "bg-primary-600 hover:bg-primary-500 text-white shadow-[0_5px_0_#1e3a8a,_0_8px_15px_rgba(0,0,0,0.6)] active:translate-y-[3px] active:shadow-[0_2px_0_#1e3a8a,_0_4px_8px_rgba(0,0,0,0.6)] cursor-pointer"
-                                : "bg-obsidian-800 border border-white/10 text-text-muted cursor-not-allowed opacity-50 shadow-none"
+                                ? "bg-button-tactile hover:bg-button-tactile-active text-white shadow-button-tactile active:translate-y-1 active:shadow-button-tactile-active cursor-pointer"
+                                : "bg-obsidian-900 text-text-muted border border-white/10 opacity-40 cursor-not-allowed"
                             }`}
                           >
                             <span>PRESS BLUE BUTTON</span>
                           </button>
-
                         </div>
                       </div>
                     );
@@ -595,12 +613,12 @@ export default function EVMSimulatorPage() {
                     <strong>EVM Security Interlock:</strong> Once the blue button is pressed, the Ballot Unit automatically locks until re-enabled by the Presiding Officer on the Control Unit.
                   </span>
                 </div>
-              </div>
+              </AnimatedCard>
 
               {/* ===================================================
                   CRYPTOGRAPHIC SHA-256 AUDIT LEDGER (IaaS TELEMETRY)
                   =================================================== */}
-              <div id="ledger" className="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 bg-surface dark:bg-obsidian-900/90 flex flex-col gap-4">
+              <AnimatedCard delay={0.3} id="ledger" className="p-6 sm:p-8 flex flex-col gap-4 animate-border-continuous">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
                   <div className="flex items-center gap-2.5">
                     <Terminal className="w-5 h-5 text-emerald-400" />
@@ -648,7 +666,7 @@ export default function EVMSimulatorPage() {
                     </div>
                   ))}
                 </div>
-              </div>
+              </AnimatedCard>
 
             </section>
 

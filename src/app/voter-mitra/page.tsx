@@ -23,6 +23,7 @@ import {
   ExternalLink,
   ChevronRight
 } from "lucide-react";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
 
 /* ========================================================
    TYPES & CATEGORIZED PROMPT WORKSPACE
@@ -328,7 +329,7 @@ export default function VoterMitraPage() {
           className="w-full lg:w-80 xl:w-96 flex flex-col gap-5 flex-shrink-0"
           aria-label="Civic Intelligence Prompt Workspace"
         >
-          <div className="glass-card rounded-3xl p-6 border border-white/15 bg-surface dark:bg-obsidian-900/90 flex flex-col gap-5 shadow-glass-elevated">
+          <AnimatedCard delay={0.1} className="p-6 flex flex-col gap-5 animate-border-continuous">
             
             {/* Copilot Header */}
             <div className="flex items-center gap-3.5 pb-4 border-b border-white/10">
@@ -417,14 +418,15 @@ export default function VoterMitraPage() {
               </button>
             </div>
 
-          </div>
+          </AnimatedCard>
         </aside>
 
         {/* =======================================================
             RIGHT WORKSPACE PANE (Enterprise Streaming Console)
             ======================================================= */}
-        <section
-          className="flex-1 glass-card rounded-3xl border border-white/15 bg-surface dark:bg-obsidian-900/90 shadow-glass-elevated flex flex-col overflow-hidden relative min-h-[520px]"
+        <AnimatedCard
+          delay={0.2}
+          className="flex-1 flex flex-col overflow-hidden relative min-h-[520px] animate-border-continuous"
           aria-label="Streaming Conversational Console"
         >
           {/* Top Console Status Bar */}
@@ -499,7 +501,7 @@ export default function VoterMitraPage() {
             </form>
           </div>
 
-        </section>
+        </AnimatedCard>
 
       </div>
     </main>

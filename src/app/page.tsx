@@ -24,6 +24,7 @@ import {
   Radio,
   Share2
 } from "lucide-react";
+import { AnimatedCard } from "@/components/ui/AnimatedCard";
 
 /* ========================================================
    TELEMETRY STATS MATRIX
@@ -183,23 +184,24 @@ export default function HomePage() {
 
           {/* Telemetry Matrix Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full max-w-5xl mx-auto">
-            {STATS.map((s) => {
+            {STATS.map((s, idx) => {
               const Icon = s.icon;
               return (
-                <div
+                <AnimatedCard
                   key={s.label}
-                  className="rounded-2xl p-5 bg-obsidian-950/60 backdrop-blur-xl border border-white/15 flex flex-col items-center justify-center relative overflow-hidden group hover:border-cyber-400 hover:shadow-[0_0_25px_rgba(6,182,212,0.25)] hover:-translate-y-1 transition-all duration-300"
+                  delay={idx * 0.1}
+                  className="p-5 flex flex-col items-center justify-center animate-border-continuous group"
                 >
-                  <div className="flex items-center gap-2.5 mb-2">
+                  <div className="flex items-center gap-2.5 mb-2 relative z-10">
                     <Icon className={`w-5 h-5 ${s.color}`} />
                     <span className="font-display font-black text-2xl sm:text-3xl text-white tracking-tight">
                       {s.value}
                     </span>
                   </div>
-                  <span className="text-xs font-mono text-text-secondary tracking-wide uppercase font-semibold">
+                  <span className="text-xs font-mono text-text-secondary tracking-wide uppercase font-semibold relative z-10">
                     {s.label}
                   </span>
-                </div>
+                </AnimatedCard>
               );
             })}
           </div>
@@ -231,12 +233,13 @@ export default function HomePage() {
 
           {/* Clean 2x2 Spacious Bento Glass Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
-            {FEATURES.map((f) => {
+            {FEATURES.map((f, idx) => {
               const Icon = f.icon;
               return (
-                <article
+                <AnimatedCard
                   key={f.id}
-                  className="rounded-3xl p-8 bg-obsidian-950/60 backdrop-blur-2xl border border-white/15 flex flex-col justify-between relative overflow-hidden group hover:border-cyber-400 hover:bg-obsidian-900/80 hover:shadow-[0_12px_45px_rgba(6,182,212,0.3)] hover:-translate-y-2 transition-all duration-500"
+                  delay={idx * 0.15}
+                  className="p-8 flex flex-col justify-between animate-border-continuous group"
                 >
                   <div className="absolute -top-16 -right-16 w-36 h-36 bg-gradient-to-br from-cyber-500/20 via-electric-500/15 to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
 
@@ -321,7 +324,7 @@ export default function HomePage() {
                       <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform" />
                     </Link>
                   </div>
-                </article>
+                </AnimatedCard>
               );
             })}
           </div>
@@ -353,12 +356,13 @@ export default function HomePage() {
 
           {/* 3-Step Converted to Premium Glowing Glass Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            {ARCHITECTURE_STEPS.map((step) => {
+            {ARCHITECTURE_STEPS.map((step, idx) => {
               const Icon = step.icon;
               return (
-                <div
+                <AnimatedCard
                   key={step.step}
-                  className="rounded-3xl p-8 bg-obsidian-950/60 backdrop-blur-2xl border border-white/15 relative overflow-hidden group hover:border-emerald-400 hover:bg-obsidian-900/80 hover:shadow-[0_12px_45px_rgba(16,185,129,0.25)] hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between"
+                  delay={idx * 0.2}
+                  className="p-8 flex flex-col justify-between animate-border-continuous group"
                 >
                   <div className="absolute top-0 right-0 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none group-hover:scale-150 transition-transform duration-500" />
                   
@@ -386,7 +390,7 @@ export default function HomePage() {
                       <CheckCircle2 className="w-4 h-4" /> VERIFIED & ACTIVE
                     </span>
                   </div>
-                </div>
+                </AnimatedCard>
               );
             })}
           </div>
@@ -399,23 +403,23 @@ export default function HomePage() {
           ===================================================== */}
       <section aria-labelledby="cta-heading" className="py-24 bg-transparent relative overflow-hidden z-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="rounded-3xl p-8 sm:p-14 bg-obsidian-950/70 backdrop-blur-2xl border border-white/20 shadow-2xl text-center relative overflow-hidden">
+          <AnimatedCard className="p-8 sm:p-14 text-center animate-border-continuous">
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary-500/25 rounded-full blur-3xl pointer-events-none" />
             
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-saffron-500/15 border border-saffron-500/40 text-xs font-mono text-saffron-300 mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-saffron-500/15 border border-saffron-500/40 text-xs font-mono text-saffron-300 mb-6 shadow-sm relative z-10">
               <span>🇮🇳 DEMOCRACY IN YOUR HANDS</span>
             </div>
 
-            <h2 id="cta-heading" className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white mb-6 tracking-tight leading-tight">
+            <h2 id="cta-heading" className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-white mb-6 tracking-tight leading-tight relative z-10">
               Your Vote Is Sacred. <br />
               <span className="gradient-text">Make It Cryptographically Count.</span>
             </h2>
 
-            <p className="max-w-xl mx-auto text-base sm:text-lg text-text-secondary mb-10 leading-relaxed font-normal">
+            <p className="max-w-xl mx-auto text-base sm:text-lg text-text-secondary mb-10 leading-relaxed font-normal relative z-10">
               Whether you are a first-time voter learning how an EVM beep sounds or checking your nearest booth coordinates, NexGen Civic OS equips you instantly.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-4 relative z-10">
               <Link
                 href="/evm-simulator"
                 className="btn-primary py-4 px-8 rounded-2xl text-base shadow-command-glow flex items-center gap-2.5 font-display font-bold hover:scale-105 transition-all"
@@ -433,7 +437,7 @@ export default function HomePage() {
               </Link>
             </div>
 
-            <div className="mt-12 pt-8 border-t border-white/10 flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-text-muted">
+            <div className="mt-12 pt-8 border-t border-white/10 flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-text-muted relative z-10">
               <span className="flex items-center gap-1.5 text-white/90">
                 <ShieldCheck className="w-4 h-4 text-emerald-400" />
                 100% ECI Compliant Guidelines
@@ -449,7 +453,7 @@ export default function HomePage() {
                 Groq Llama 3.3 70B AI Engine
               </span>
             </div>
-          </div>
+          </AnimatedCard>
         </div>
       </section>
 
