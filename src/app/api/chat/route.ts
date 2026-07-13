@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
     }
 
     /* ── 1. Primary Engine: Groq API (Llama 3.3 70B Versatile) ── */
-    const groqApiKey = process.env.GROQ_API_KEY;
+    const groqApiKey = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY;
     if (groqApiKey) {
       try {
         const groqMessages = [
@@ -92,10 +92,11 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ── 2. Secondary Engine: Google Gemini API Fallback ── */
-    const geminiApiKey = process.env.GEMINI_API_KEY;
+    /* ── 2. Secondary Engine: Google Gemini API (Dual SDK + Direct REST Fallback) ── */
+    const geminiApiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
     if (geminiApiKey) {
       try {
+        /* Try via official SDK first */
         const genAI = new GoogleGenerativeAI(geminiApiKey);
         const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
@@ -119,8 +120,32 @@ export async function POST(req: NextRequest) {
         const result = await chat.sendMessage(userText);
         const responseText = result.response.text();
         return NextResponse.json({ reply: responseText, engine: "gemini-1.5-flash" }, { status: 200 });
-      } catch (geminiErr) {
-        console.warn("[Voter Mitra Gemini API Error - Triggering Static Intelligence]", geminiErr);
+      } catch (geminiSdkErr) {
+        console.warn("[Voter Mitra Gemini SDK Error - Trying direct REST API]", geminiSdkErr);
+        /* Try direct REST API fallback across Gemini 1.5 & 2.0 */
+        try {
+          const restRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+              contents: messages.map((m) => ({
+                role: m.role === "model" ? "model" : "user",
+                parts: [{ text: m.parts?.[0]?.text ?? m.content ?? "" }],
+              })),
+              generationConfig: { temperature: 0.7, maxOutputTokens: 1024 },
+            }),
+          });
+          if (restRes.ok) {
+            const restData = await restRes.json();
+            const replyText = restData?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (replyText) {
+              return NextResponse.json({ reply: replyText, engine: "gemini-1.5-flash-rest" }, { status: 200 });
+            }
+          }
+        } catch (restErr) {
+          console.warn("[Voter Mitra Gemini REST Error]", restErr);
+        }
       }
     }
 
