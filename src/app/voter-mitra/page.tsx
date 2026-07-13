@@ -523,121 +523,116 @@ export default function VoterMitraPage() {
       id="main-content"
       role="main"
       aria-labelledby="voter-mitra-heading"
-      className="min-h-[calc(100dvh-70px)] bg-dot-grid flex flex-col"
+      className="h-[calc(100vh-4.5rem)] max-h-[calc(100vh-4.5rem)] overflow-hidden bg-dot-grid flex flex-col py-4 px-4 sm:px-6 lg:px-8"
     >
-      <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col lg:flex-row gap-6 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto w-full h-full flex flex-col lg:flex-row gap-5 overflow-hidden">
         
         {/* =======================================================
             LEFT WORKSPACE PANE (Prompt Library & References)
             ======================================================= */}
         <aside
-          className="w-full lg:w-80 xl:w-96 flex flex-col gap-5 flex-shrink-0"
+          className="w-full lg:w-80 xl:w-96 h-full flex flex-col gap-4 flex-shrink-0 overflow-hidden bg-obsidian-950/90 backdrop-blur-md border border-white/10 rounded-2xl p-5 shadow-xl"
           aria-label="Civic Intelligence Prompt Workspace"
         >
-          <AnimatedCard delay={0.1} className="p-6 flex flex-col gap-5 animate-border-continuous">
-            
-            {/* Copilot Header */}
-            <div className="flex items-center gap-3.5 pb-4 border-b border-white/10">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyber-600 to-primary-700 flex items-center justify-center text-white shadow-md">
-                <Bot className="w-6 h-6 text-cyber-200 animate-pulse-glow" />
-              </div>
-              <div>
-                <h1 id="voter-mitra-heading" className="font-display font-extrabold text-lg text-obsidian-950 dark:text-white leading-tight">
-                  Voter Mitra AI <span className="text-cyber-400 font-mono text-xs">v2.0</span>
-                </h1>
-                <span className="text-xs font-mono text-text-muted flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Autonomous ECI Copilot
-                </span>
-              </div>
+          {/* Copilot Header */}
+          <div className="flex items-center gap-3.5 pb-3.5 border-b border-white/10 flex-shrink-0">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyber-600 to-primary-700 flex items-center justify-center text-white shadow-md">
+              <Bot className="w-6 h-6 text-cyber-200 animate-pulse-glow" />
             </div>
-
-            {/* Prompt Category Tabs */}
-            <div className="flex flex-col gap-2">
-              <span className="text-xs font-mono font-bold text-text-secondary uppercase tracking-wider">
-                KNOWLEDGE WORKSPACE CATEGORIES:
+            <div>
+              <h1 id="voter-mitra-heading" className="font-display font-extrabold text-lg text-white leading-tight">
+                Voter Mitra AI <span className="text-cyber-400 font-mono text-xs">v2.0</span>
+              </h1>
+              <span className="text-[11px] font-mono text-text-muted flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Autonomous ECI Copilot
               </span>
-              <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
-                {PROMPT_CATEGORIES.map((cat) => {
-                  const Icon = cat.icon;
-                  const isActive = activeCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setActiveCategory(cat.id)}
-                      className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-display font-bold transition-all text-left ${
-                        isActive
-                          ? "bg-primary-600 text-white shadow-sm border border-primary-400/40"
-                          : "bg-obsidian-950/80 hover:bg-obsidian-900 text-text-secondary hover:text-white border border-white/5"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className={`w-4 h-4 ${isActive ? "text-cyber-300" : "text-text-muted"}`} />
-                        <span>{cat.label}</span>
-                      </div>
-                      <ChevronRight className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-text-muted"}`} />
-                    </button>
-                  );
-                })}
-              </div>
             </div>
+          </div>
 
-            {/* Prompt Quick-Click List */}
-            <div className="flex flex-col gap-2.5 pt-2 border-t border-white/10">
-              <span className="text-[11px] font-mono text-cyber-400 uppercase font-semibold flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Quick Queries ({currentCategoryObj.label}):
-              </span>
-
-              <div className="flex flex-col gap-2">
-                {currentCategoryObj.prompts.map((p, idx) => (
+          {/* Prompt Category Tabs */}
+          <div className="flex flex-col gap-2 flex-shrink-0">
+            <span className="text-[11px] font-mono font-bold text-text-secondary uppercase tracking-wider">
+              KNOWLEDGE WORKSPACE CATEGORIES:
+            </span>
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1.5">
+              {PROMPT_CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                const isActive = activeCategory === cat.id;
+                return (
                   <button
-                    key={idx}
+                    key={cat.id}
                     type="button"
-                    onClick={() => sendMessage(p.query)}
-                    disabled={isLoading}
-                    className="p-3 rounded-xl bg-obsidian-950 border border-white/10 hover:border-cyber-500/50 text-left transition-all group flex flex-col gap-1 focus-ring disabled:opacity-50"
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-display font-bold transition-all text-left ${
+                      isActive
+                        ? "bg-primary-600 text-white shadow-sm border border-primary-400/40"
+                        : "bg-obsidian-900/80 hover:bg-obsidian-900 text-text-secondary hover:text-white border border-white/5"
+                    }`}
                   >
-                    <span className="text-xs font-bold text-white group-hover:text-cyber-400 transition-colors flex items-center justify-between">
-                      <span>{p.title}</span>
-                      <Send className="w-3 h-3 text-text-muted group-hover:text-cyber-400 transform group-hover:translate-x-0.5 transition-transform" />
-                    </span>
-                    <span className="text-[11px] text-text-muted line-clamp-2 font-mono">
-                      &quot;{p.query}&quot;
-                    </span>
+                    <div className="flex items-center gap-2.5">
+                      <Icon className={`w-4 h-4 ${isActive ? "text-cyber-300" : "text-text-muted"}`} />
+                      <span>{cat.label}</span>
+                    </div>
+                    <ChevronRight className={`w-3.5 h-3.5 ${isActive ? "text-white" : "text-text-muted"}`} />
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Reset Controls */}
-            <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
-              <button
-                type="button"
-                onClick={resetSession}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-obsidian-950 hover:bg-obsidian-900 border border-white/10 text-xs font-mono text-text-secondary hover:text-white transition-all w-full justify-center font-bold"
-                title="Reset Chat Session"
-              >
-                <RefreshCw className="w-3.5 h-3.5 text-cyber-400" />
-                <span>CLEAR & RESET SESSION</span>
-              </button>
+          {/* Prompt Quick-Click List */}
+          <div className="flex-1 flex flex-col gap-2.5 pt-3 border-t border-white/10 overflow-y-auto custom-scrollbar pr-1">
+            <span className="text-[11px] font-mono text-cyber-400 uppercase font-semibold flex items-center gap-1 flex-shrink-0">
+              <Sparkles className="w-3 h-3" /> Quick Queries ({currentCategoryObj.label}):
+            </span>
+
+            <div className="flex flex-col gap-2">
+              {currentCategoryObj.prompts.map((p, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => sendMessage(p.query)}
+                  disabled={isLoading}
+                  className="p-3 rounded-xl bg-obsidian-900/60 hover:bg-obsidian-900 border border-white/10 hover:border-cyber-500/50 text-left transition-all group flex flex-col gap-1 focus-ring disabled:opacity-50"
+                >
+                  <span className="text-xs font-bold text-white group-hover:text-cyber-300 transition-colors flex items-center justify-between">
+                    <span>{p.title}</span>
+                    <Send className="w-3 h-3 text-text-muted group-hover:text-cyber-400 transform group-hover:translate-x-0.5 transition-transform" />
+                  </span>
+                  <span className="text-[11px] text-text-muted line-clamp-2 font-mono leading-snug">
+                    &quot;{p.query}&quot;
+                  </span>
+                </button>
+              ))}
             </div>
+          </div>
 
-          </AnimatedCard>
+          {/* Reset Controls */}
+          <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2 flex-shrink-0">
+            <button
+              type="button"
+              onClick={resetSession}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-obsidian-900 hover:bg-obsidian-800 border border-white/10 text-xs font-mono text-text-secondary hover:text-white transition-all w-full justify-center font-bold"
+              title="Reset Chat Session"
+            >
+              <RefreshCw className="w-3.5 h-3.5 text-cyber-400" />
+              <span>CLEAR & RESET SESSION</span>
+            </button>
+          </div>
         </aside>
 
         {/* =======================================================
             RIGHT WORKSPACE PANE (Enterprise Streaming Console)
             ======================================================= */}
-        <AnimatedCard
-          delay={0.2}
-          className="flex-1 flex flex-col overflow-hidden relative min-h-[520px] animate-border-continuous"
+        <div
+          className="flex-1 h-full flex flex-col overflow-hidden bg-obsidian-950/90 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl relative"
           aria-label="Streaming Conversational Console"
         >
-          {/* Top Console Status Bar */}
-          <div className="px-6 py-4 border-b border-border/80 bg-obsidian-950/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* Top Console Status Bar - Fixed at top of right pane */}
+          <div className="px-6 py-3.5 border-b border-white/10 bg-obsidian-900/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-obsidian-900 border border-cyber-500/30 text-xs font-mono text-cyber-400 font-bold">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-obsidian-950 border border-cyber-500/30 text-xs font-mono text-cyber-400 font-bold">
                 <Terminal className="w-3.5 h-3.5" />
                 <span>STREAM CONSOLE</span>
               </div>
@@ -653,10 +648,10 @@ export default function VoterMitraPage() {
             </div>
           </div>
 
-          {/* Message Stream Area */}
+          {/* Message Stream Area - THE ONLY ELEMENT THAT SCROLLS */}
           <div 
             ref={chatScrollRef}
-            className="flex-1 overflow-y-auto p-6 sm:p-8 flex flex-col gap-6 scroll-smooth" 
+            className="flex-1 overflow-y-auto p-5 sm:p-7 flex flex-col gap-5 custom-scrollbar" 
             role="list"
           >
             {messages.map((m, idx) => (
@@ -673,19 +668,19 @@ export default function VoterMitraPage() {
             )}
           </div>
 
-          {/* Input Command Dock */}
-          <div className="p-4 sm:p-6 border-t border-border/80 bg-obsidian-950/90">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+          {/* Input Command Dock - Fixed at bottom of right pane */}
+          <div className="p-4 sm:p-5 border-t border-white/10 bg-obsidian-950/95 flex-shrink-0">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
               <div className="relative flex items-end gap-2 bg-obsidian-900 border border-white/15 focus-within:border-cyber-500 rounded-2xl p-2 sm:p-3 shadow-inner transition-all">
                 <textarea
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask any question about voter registration, EVMs, rights, or booth procedures..."
+                  placeholder="Ask any question about voter registration, EVMs, constitutional rights, or booth procedures..."
                   disabled={isLoading}
                   rows={2}
-                  className="w-full bg-transparent border-none text-obsidian-950 dark:text-white text-sm focus:outline-none resize-none px-2 py-1 leading-relaxed placeholder:text-text-muted"
+                  className="w-full bg-transparent border-none text-white text-sm focus:outline-none resize-none px-2 py-1 leading-relaxed placeholder:text-text-muted"
                 />
 
                 <button
@@ -705,8 +700,7 @@ export default function VoterMitraPage() {
               </div>
             </form>
           </div>
-
-        </AnimatedCard>
+        </div>
 
       </div>
     </main>
