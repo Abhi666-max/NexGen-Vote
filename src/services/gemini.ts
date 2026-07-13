@@ -3,8 +3,8 @@
  * Dual-Engine Inference Wrapper (Groq + Gemini AI) for Voter Mitra Assistant.
  */
 
-const GROQ_API_KEY = process.env.GROQ_API_KEY ?? "";
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? "";
+const GROQ_API_KEY = process.env.GROQ_API_KEY || process.env.NEXT_PUBLIC_GROQ_API_KEY || "";
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "";
 
 export interface GeminiMessage {
   role: "user" | "model" | "assistant" | "system";
