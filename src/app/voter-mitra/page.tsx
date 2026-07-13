@@ -6,7 +6,7 @@
  * Enterprise Dual-Pane Conversational Civic Intelligence Command Center
  */
 
-import { useState, useRef, useEffect, useCallback, type FormEvent, type KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, memo, type FormEvent, type KeyboardEvent } from "react";
 import { 
   Bot, 
   User, 
@@ -89,9 +89,15 @@ const PROMPT_CATEGORIES: PromptCategory[] = [
   },
 ];
 
-const uid = () => Math.random().toString(36).slice(2, 9);
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+/* ========================================================
+   HELPER FORMATTING & TIME FUNCTIONS
+   ======================================================== */
+function uid() {
+  return Math.random().toString(36).slice(2, 9);
+}
+
+function formatTime(date: Date) {
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 /* ========================================================
@@ -143,7 +149,7 @@ function renderInlineStyle(text: string): React.ReactNode[] {
   return parts;
 }
 
-function FormattedCivicText({ text }: { text: string }) {
+const FormattedCivicText = memo(function FormattedCivicText({ text }: { text: string }) {
   const lines = text.split("\n");
   return (
     <div className="space-y-2 text-sm leading-relaxed">
@@ -195,12 +201,12 @@ function FormattedCivicText({ text }: { text: string }) {
       })}
     </div>
   );
-}
+});
 
 /* ========================================================
-   MESSAGE BUBBLE COMPONENT (Enterprise Formatted Card)
+   MESSAGE BUBBLE COMPONENT (Enterprise Formatted & Memoized)
    ======================================================== */
-function MessageBubble({ 
+const MessageBubble = memo(function MessageBubble({ 
   msg, 
   index,
   onCopy, 
@@ -213,7 +219,7 @@ function MessageBubble({
 }) {
   const [copied, setCopied] = useState(false);
   const isUser = msg.role === "user";
-  const isWelcome = !isUser && (index === 0 || msg.id === "welcome" || msg.text.includes("Welcome to the **Voter Mitra") || msg.text.includes("Welcome to Voter Mitra AI"));
+  const isWelcome = !isUser && (index === 0 || msg.id === "welcome" || msg.text.includes("Welcome to Voter Mitra AI") || msg.text.includes("Welcome to the **Voter Mitra"));
 
   const handleCopy = () => {
     onCopy(msg.text);
@@ -223,7 +229,7 @@ function MessageBubble({
 
   return (
     <div
-      className={`flex items-start gap-3.5 ${isUser ? "flex-row-reverse" : "flex-row"} animate-slide-up w-full`}
+      className={`flex items-start gap-3.5 ${isUser ? "flex-row-reverse" : "flex-row"} animate-fade-in w-full`}
       role="listitem"
     >
       {/* Avatar Icon */}
@@ -239,7 +245,7 @@ function MessageBubble({
       </div>
 
       {/* Message Content Bubble */}
-      <div className={`flex flex-col gap-1.5 max-w-[90%] sm:max-w-[82%] ${isUser ? "items-end" : "items-start"}`}>
+      <div className={`flex flex-col gap-1.5 max-w-[92%] sm:max-w-[85%] ${isUser ? "items-end" : "items-start"} w-full`}>
         
         {/* Header Tag */}
         <div className="flex items-center gap-2 px-1">
@@ -253,7 +259,7 @@ function MessageBubble({
         <div
           className={`p-5 sm:p-6 rounded-2xl text-sm leading-relaxed relative group w-full ${
             isUser
-              ? "bg-primary-600 text-white rounded-tr-sm shadow-md border border-primary-400/30 whitespace-pre-wrap break-words"
+              ? "bg-primary-600 text-white rounded-tr-sm shadow-md border border-primary-400/30 whitespace-pre-wrap break-words max-w-[85%]"
               : "glass-card bg-surface dark:bg-obsidian-900 text-obsidian-950 dark:text-white rounded-tl-sm border border-border/80 shadow-md"
           }`}
         >
@@ -261,68 +267,81 @@ function MessageBubble({
             msg.text
           ) : isWelcome ? (
             /* ========================================================
-               NEAT & CLEAN INTERACTIVE WELCOME CARD
+               EXECUTIVE ECI CIVIC INTELLIGENCE COMMAND CENTER
                ======================================================== */
-            <div className="flex flex-col gap-5 animate-fade-in">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-1 rounded-full bg-cyber-500/10 border border-cyber-500/30 font-mono text-[11px] text-cyber-300 font-bold flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin-slow" /> ECI ART. 326 COMPLIANT
-                </span>
-                <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 font-mono text-[11px] text-emerald-300 font-bold flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> DUAL AI ENGINE (GROQ + GEMINI)
-                </span>
+            <div className="flex flex-col gap-6 animate-fade-in w-full">
+              {/* Top Executive Header & System Telemetry Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber-600 to-primary-700 border border-cyber-400/40 flex items-center justify-center text-white shadow-lg flex-shrink-0">
+                    <Terminal className="w-5 h-5 text-cyber-200" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-extrabold text-lg sm:text-xl text-white tracking-tight leading-tight flex items-center gap-2">
+                      <span>Voter Mitra AI Copilot</span>
+                      <span className="px-2 py-0.5 rounded-md bg-obsidian-950 border border-cyber-500/40 font-mono text-[10px] text-cyber-300">v2.0 PRO</span>
+                    </h3>
+                    <span className="text-xs font-mono text-text-muted flex items-center gap-1.5 mt-0.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      Statutory Intelligence & Voting Rights Copilot
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-full bg-obsidian-950 border border-emerald-500/30 font-mono text-[11px] text-emerald-400 font-bold flex items-center gap-1.5 shadow-sm">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> ECI ART. 324 & 326 COMPLIANT
+                  </span>
+                </div>
               </div>
 
-              <div>
-                <h3 className="font-display font-black text-xl sm:text-2xl text-white tracking-tight mb-2">
-                  Namaste! 🙏 Welcome to Voter Mitra AI Copilot
-                </h3>
-                <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                  I am your autonomous Indian civic intelligence copilot, engineered for high-speed constitutional queries. Trained strictly on official <strong className="text-amber-300 font-semibold">Election Commission of India (ECI) regulations</strong>, universal suffrage laws (<strong className="text-cyber-300 font-semibold">Article 326</strong>), and cryptographic EVM/VVPAT hardware specifications.
-                </p>
+              {/* Authoritative Architectural Overview */}
+              <div className="p-4 rounded-xl bg-obsidian-950/80 border border-white/10 text-xs sm:text-sm text-text-secondary leading-relaxed shadow-inner">
+                Welcome to the official Election Commission of India (ECI) civic intelligence portal. Powered by dual-engine neural inference (<strong className="text-white font-semibold">Groq Llama 3.3 70B</strong> & <strong className="text-cyber-300 font-semibold">Gemini 2.0</strong>) to provide verified, zero-latency guidance on voter registration protocols, cryptographic EVM/VVPAT hardware verification, and polling station constitutional law.
               </div>
 
-              {/* Interactive Quick Launch Grid inside Welcome Card */}
-              <div className="pt-3 border-t border-white/10 flex flex-col gap-3">
-                <span className="text-[11px] font-mono font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>⚡ SELECT A STATUTORY TOPIC BELOW OR TYPE YOUR EXACT QUESTION:</span>
+              {/* Executive Inquiry Modules (Select or Click to Launch) */}
+              <div className="flex flex-col gap-3">
+                <span className="text-[11px] font-mono font-bold text-cyber-400 uppercase tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>SELECT STATUTORY INQUIRY MODULE TO LAUNCH INSTANT QUERY:</span>
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => onQuickQuery && onQuickQuery("Can you give me a step-by-step guide on how to register as a first-time voter online via Form 6?")}
-                    className="p-3.5 rounded-xl bg-obsidian-950/90 hover:bg-obsidian-950 border border-white/10 hover:border-amber-400/50 text-left transition-all group/btn flex flex-col justify-between gap-2 shadow-sm"
+                    className="p-4 rounded-xl bg-obsidian-950 hover:bg-obsidian-900 border border-white/10 hover:border-cyber-500/60 text-left transition-all group/btn flex flex-col justify-between gap-2.5 shadow-md"
                   >
-                    <span className="font-display font-bold text-xs text-white group-hover/btn:text-amber-300 transition-colors flex items-center justify-between">
-                      <span>📋 Form 6 Registration</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-text-muted group-hover/btn:text-amber-300 transform group-hover/btn:translate-x-0.5 transition-all" />
+                    <span className="font-display font-bold text-xs text-white group-hover/btn:text-cyber-300 transition-colors flex items-center justify-between">
+                      <span>Form 6 Online Enrollment</span>
+                      <ChevronRight className="w-4 h-4 text-text-muted group-hover/btn:text-cyber-300 transform group-hover/btn:translate-x-0.5 transition-all" />
                     </span>
-                    <span className="text-[11px] font-mono text-text-muted leading-snug">Step-by-step online enrollment guide for new voters.</span>
+                    <span className="text-[11px] font-mono text-text-muted leading-relaxed">Step-by-step registration procedure, required identity docs, and age verification.</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onQuickQuery && onQuickQuery("Explain technically why Indian EVMs cannot be hacked remotely via Wi-Fi, Bluetooth, or internet connections.")}
-                    className="p-3.5 rounded-xl bg-obsidian-950/90 hover:bg-obsidian-950 border border-white/10 hover:border-cyber-400/50 text-left transition-all group/btn flex flex-col justify-between gap-2 shadow-sm"
+                    className="p-4 rounded-xl bg-obsidian-950 hover:bg-obsidian-900 border border-white/10 hover:border-amber-400/60 text-left transition-all group/btn flex flex-col justify-between gap-2.5 shadow-md"
                   >
-                    <span className="font-display font-bold text-xs text-white group-hover/btn:text-cyber-300 transition-colors flex items-center justify-between">
-                      <span>🛡️ EVM Hardware Immunity</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-text-muted group-hover/btn:text-cyber-300 transform group-hover/btn:translate-x-0.5 transition-all" />
+                    <span className="font-display font-bold text-xs text-white group-hover/btn:text-amber-300 transition-colors flex items-center justify-between">
+                      <span>EVM Hardware Cryptography</span>
+                      <ChevronRight className="w-4 h-4 text-text-muted group-hover/btn:text-amber-300 transform group-hover/btn:translate-x-0.5 transition-all" />
                     </span>
-                    <span className="text-[11px] font-mono text-text-muted leading-snug">Standalone OTP microchips & zero wireless interfaces.</span>
+                    <span className="text-[11px] font-mono text-text-muted leading-relaxed">Standalone OTP silicon chip architecture and physical isolation verification.</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => onQuickQuery && onQuickQuery("What exact documents do I need to carry to the polling booth on election day if I don't have my EPIC card?")}
-                    className="p-3.5 rounded-xl bg-obsidian-950/90 hover:bg-obsidian-950 border border-white/10 hover:border-emerald-400/50 text-left transition-all group/btn flex flex-col justify-between gap-2 shadow-sm"
+                    className="p-4 rounded-xl bg-obsidian-950 hover:bg-obsidian-900 border border-white/10 hover:border-emerald-400/60 text-left transition-all group/btn flex flex-col justify-between gap-2.5 shadow-md"
                   >
                     <span className="font-display font-bold text-xs text-white group-hover/btn:text-emerald-300 transition-colors flex items-center justify-between">
-                      <span>📍 Booth Rights & 12 IDs</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-text-muted group-hover/btn:text-emerald-300 transform group-hover/btn:translate-x-0.5 transition-all" />
+                      <span>Polling Booth Statutory IDs</span>
+                      <ChevronRight className="w-4 h-4 text-text-muted group-hover/btn:text-emerald-300 transform group-hover/btn:translate-x-0.5 transition-all" />
                     </span>
-                    <span className="text-[11px] font-mono text-text-muted leading-snug">Alternative photo ID verification at your polling station.</span>
+                    <span className="text-[11px] font-mono text-text-muted leading-relaxed">Alternative government-issued photo identity documents valid on election day.</span>
                   </button>
                 </div>
               </div>
@@ -354,7 +373,7 @@ function MessageBubble({
       </div>
     </div>
   );
-}
+});
 
 /* ========================================================
    TYPING INDICATOR
