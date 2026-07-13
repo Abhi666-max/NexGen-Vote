@@ -259,9 +259,13 @@ function DemocracyProCertificate({
               value={userName}
               onChange={(e) => onNameChange(e.target.value)}
               placeholder="Enter Your Full Name Here..."
-              className="w-full bg-obsidian-900/80 border-b-2 border-amber-400 text-center font-display font-black text-2xl sm:text-4xl text-amber-300 focus:outline-none py-2 px-4 rounded-t-xl transition-all"
+              className="w-full bg-obsidian-900/80 border-b-2 border-amber-400 text-center font-display font-black text-2xl sm:text-4xl text-amber-300 focus:outline-none py-2 px-4 rounded-t-xl transition-all print:hidden"
             />
-            <span className="text-[10px] font-mono text-text-muted block mt-1">
+            {/* Clean, high-contrast name display specifically for Print / PDF export */}
+            <div className="hidden print:block w-full text-center font-display font-black text-3xl sm:text-4xl text-amber-300 py-2 px-4 border-b-2 border-amber-400">
+              {userName || "Accredited Indian Citizen"}
+            </div>
+            <span className="text-[10px] font-mono text-text-muted block mt-1 print:hidden">
               (Click name above to edit before downloading or printing)
             </span>
           </div>
@@ -317,6 +321,7 @@ function DemocracyProCertificate({
    MAIN PORTAL COMPONENT
    ======================================================== */
 export default function QuizPage() {
+  const [isStarted, setIsStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -324,7 +329,10 @@ export default function QuizPage() {
   const [isFinished, setIsFinished] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [userName, setUserName] = useState("Abhijeet Kangane");
+  const [userName, setUserName] = useState("");
+  const [stateUT, setStateUT] = useState("");
+  const [voterStatus, setVoterStatus] = useState("REGISTERED");
+  const [nameError, setNameError] = useState("");
 
   const currentQ = QUESTIONS[currentIndex];
 
@@ -369,6 +377,19 @@ export default function QuizPage() {
     setShowExplanation(false);
   };
 
+  /* Start Quiz Trigger */
+  const handleStartQuiz = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userName || userName.trim().length < 2) {
+      setNameError("Please enter your full legal or preferred name (at least 2 characters) for official diploma inscription.");
+      return;
+    }
+    setNameError("");
+    setIsStarted(true);
+    resetAssessment();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <main
       id="main-content"
@@ -394,8 +415,13 @@ export default function QuizPage() {
           </div>
 
           {/* Live Telemetry Pills (XP & Streak) */}
-          {!isFinished && (
-            <div className="flex items-center gap-3">
+          {isStarted && !isFinished && (
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-obsidian-900 border border-amber-500/30 text-xs font-mono text-amber-300 shadow-sm">
+                <UserCheck className="w-4 h-4 text-amber-400" />
+                <span>{userName}</span>
+              </div>
+
               <div className="px-3.5 py-2 rounded-xl bg-obsidian-900 border border-white/10 text-xs font-mono text-cyber-400 font-bold flex items-center gap-2 shadow-sm">
                 <Sparkles className="w-4 h-4 text-electric-400 animate-spin-slow" />
                 <span>{xp} XP EARNED</span>
@@ -416,12 +442,156 @@ export default function QuizPage() {
               >
                 <RefreshCw className="w-4 h-4" />
               </button>
+
+              <button
+                type="button"
+                onClick={() => setIsStarted(false)}
+                title="Change Candidate Name"
+                className="px-3 py-2 rounded-xl bg-obsidian-900 border border-white/10 text-xs font-mono text-text-muted hover:text-white transition-colors"
+              >
+                Change Candidate
+              </button>
             </div>
           )}
         </div>
 
-        {/* Main Assessment Body or Finished Diploma */}
-        {isFinished ? (
+        {/* Main Assessment Body or Onboarding / Finished Diploma */}
+        {!isStarted ? (
+          /* ========================================================
+             CITIZEN ONBOARDING & NAME REGISTRATION SCREEN
+             ======================================================== */
+          <div className="w-full max-w-3xl flex flex-col gap-6 animate-fade-in print:hidden">
+            <AnimatedCard className="p-6 sm:p-10 flex flex-col gap-8 relative overflow-hidden animate-border-continuous">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-saffron-500 via-amber-500 to-emerald-500" />
+              
+              <div className="flex flex-col items-center text-center gap-3 pt-2">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-saffron-600 border-2 border-amber-300 flex items-center justify-center text-white shadow-lg transform hover:scale-105 transition-transform">
+                  <UserCheck className="w-8 h-8 text-white animate-pulse-glow" />
+                </div>
+                <span className="text-xs font-mono tracking-widest text-saffron-400 uppercase font-extrabold">
+                  STEP 01 OF 02 • CITIZEN CREDENTIAL REGISTRATION
+                </span>
+                <h2 className="font-display font-black text-2xl sm:text-4xl text-white tracking-tight">
+                  Register Candidate for Democracy Pro Diploma
+                </h2>
+                <p className="text-sm sm:text-base text-text-secondary max-w-xl leading-relaxed">
+                  Welcome to the Election Commission of India (ECI) protocol competency portal. Please register your official name below before initiating the 10-question evaluation.
+                </p>
+              </div>
+
+              {/* Assessment Features Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
+                <div className="p-4 rounded-xl bg-obsidian-950/80 border border-white/10 flex flex-col gap-1.5">
+                  <span className="text-amber-400 font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" /> 10 CORE MODULES
+                  </span>
+                  <span className="text-text-muted text-[11px]">Test knowledge on EVM hardware, VVPAT protocol & Article 326.</span>
+                </div>
+                <div className="p-4 rounded-xl bg-obsidian-950/80 border border-white/10 flex flex-col gap-1.5">
+                  <span className="text-cyber-400 font-bold flex items-center gap-1.5">
+                    <Zap className="w-4 h-4 text-amber-400" /> STREAK MULTIPLIERS
+                  </span>
+                  <span className="text-text-muted text-[11px]">Earn bonus civic XP and high-density accuracy combos.</span>
+                </div>
+                <div className="p-4 rounded-xl bg-obsidian-950/80 border border-white/10 flex flex-col gap-1.5">
+                  <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+                    <Award className="w-4 h-4 text-saffron-400" /> VERIFIABLE DIPLOMA
+                  </span>
+                  <span className="text-text-muted text-[11px]">Receive a high-res PDF certificate with SHA-256 seal ID upon completion.</span>
+                </div>
+              </div>
+
+              {/* Registration Form */}
+              <form onSubmit={handleStartQuiz} className="flex flex-col gap-6 pt-2 border-t border-white/10">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="candidate-name" className="text-xs font-mono font-bold text-amber-300 uppercase flex items-center justify-between">
+                    <span>Full Citizen Name (As it will appear on Certificate) <span className="text-red-400">*</span></span>
+                    <span className="text-[10px] text-text-muted font-normal">Required</span>
+                  </label>
+                  <input
+                    id="candidate-name"
+                    type="text"
+                    value={userName}
+                    onChange={(e) => {
+                      setUserName(e.target.value);
+                      if (nameError) setNameError("");
+                    }}
+                    placeholder="Enter your full legal or preferred name (e.g. Rahul Sharma)"
+                    className="w-full bg-obsidian-950 border border-white/20 focus:border-amber-400 text-white font-display text-base sm:text-lg px-4 py-3.5 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-amber-400/20 shadow-inner placeholder:text-text-muted/60"
+                    autoFocus
+                  />
+                  {nameError && (
+                    <span className="text-xs font-mono text-red-400 flex items-center gap-1.5 animate-shake mt-1">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" /> {nameError}
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="candidate-state" className="text-xs font-mono font-bold text-text-secondary uppercase">
+                      State / Union Territory (Optional)
+                    </label>
+                    <select
+                      id="candidate-state"
+                      value={stateUT}
+                      onChange={(e) => setStateUT(e.target.value)}
+                      className="w-full bg-obsidian-950 border border-white/15 focus:border-cyber-400 text-white font-mono text-xs px-3.5 py-3 rounded-xl transition-all focus:outline-none"
+                    >
+                      <option value="">Select State or UT</option>
+                      <option value="All India / Central">All India / Central Jurisdiction</option>
+                      <option value="Maharashtra">Maharashtra</option>
+                      <option value="Delhi">National Capital Territory of Delhi</option>
+                      <option value="Karnataka">Karnataka</option>
+                      <option value="Uttar Pradesh">Uttar Pradesh</option>
+                      <option value="Tamil Nadu">Tamil Nadu</option>
+                      <option value="West Bengal">West Bengal</option>
+                      <option value="Gujarat">Gujarat</option>
+                      <option value="Rajasthan">Rajasthan</option>
+                      <option value="Andhra Pradesh">Andhra Pradesh</option>
+                      <option value="Telangana">Telangana</option>
+                      <option value="Madhya Pradesh">Madhya Pradesh</option>
+                      <option value="Bihar">Bihar</option>
+                      <option value="Kerala">Kerala</option>
+                      <option value="Other State / UT">Other State / Union Territory</option>
+                    </select>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-mono font-bold text-text-secondary uppercase">
+                      Electoral Eligibility Status
+                    </label>
+                    <select
+                      value={voterStatus}
+                      onChange={(e) => setVoterStatus(e.target.value)}
+                      className="w-full bg-obsidian-950 border border-white/15 focus:border-cyber-400 text-white font-mono text-xs px-3.5 py-3 rounded-xl transition-all focus:outline-none"
+                    >
+                      <option value="REGISTERED">Registered Voter (EPIC Card Holder)</option>
+                      <option value="FIRST_TIME">First-Time Voter (Turned 18 Recently)</option>
+                      <option value="FUTURE">Future Voter (&lt; 18 Years Old)</option>
+                      <option value="OFFICIAL">Polling / Election Official</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10">
+                  <div className="text-left font-mono text-[11px] text-text-muted">
+                    <span className="block text-emerald-400 font-bold">🔒 ZERO-KNOWLEDGE & PRIVATE</span>
+                    <span>Your name is processed strictly on your device for PDF diploma generation.</span>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full sm:w-auto btn-primary py-3.5 px-8 rounded-xl text-sm font-display font-black flex items-center justify-center gap-2.5 shadow-command-glow transform hover:scale-[1.02] transition-transform"
+                  >
+                    <span>COMMENCE OFFICIAL ASSESSMENT</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+            </AnimatedCard>
+          </div>
+        ) : isFinished ? (
           <DemocracyProCertificate
             score={score}
             total={QUESTIONS.length}
